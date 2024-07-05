@@ -18,18 +18,18 @@ public class UserService {
         this.userRepository = clienteRepository;
     }
 
-    public List<User> getClientes() {
+    public List<User> getUsers() {
         return userRepository.findAll();
     }
 
-    public Optional<User> getCliente(Long id) {
+    public Optional<User> getUser(Long id) {
         return userRepository.findById(id);    }
     
-    public void eliminar(Long id) {
+    public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
 
-    public void guardar(User user) {
+    public void saveUser(User user) {
         userRepository.save(user);  // Altas y Cambios
 }
 
