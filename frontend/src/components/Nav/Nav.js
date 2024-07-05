@@ -12,16 +12,14 @@ class Nav extends React.Component {
 
   render() {
     return (
-      <navbar>
-        <li>
-          {menuItems.map(item => (
-            <ul key={item.name}
-              onClick={() => this.renderMenuItems(item.id)}>
-              {item.name}
-            </ul>
-          ))}
-        </li>
-      </navbar>
+      <nav className="navbar">
+      <div className="navbar-brand">TodoApp</div>
+      <ul className="navbar-links">
+        <li><a href="/">Inicio</a></li>
+        <li><a href="/login">LogIn</a></li>
+        <li><a href="/register">Register</a></li>
+      </ul>
+    </nav>
     );
   }
 }
