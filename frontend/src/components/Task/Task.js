@@ -1,10 +1,12 @@
 import React from 'react';
 import './Task.css';
 
-const Task = (props) => {
-  return (
-    <div><p>Activity</p></div>
-  );
+class Task extends React.Component {
+  render(){
+    return (
+      <div><p>Activity</p></div>
+    );
+  }
 }
 
 export default Task;
