@@ -12,10 +12,12 @@ import com.example.p02.repository.UserRepository;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder; //Encryption for passwords
 
     @Autowired
-    public UserService(UserRepository clienteRepository) {
+    public UserService(UserRepository clienteRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = clienteRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     public List<User> getUsers() {
@@ -30,6 +32,7 @@ public class UserService {
     }
 
     public void saveUser(User user) {
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);  // Altas y Cambios
 }
 
