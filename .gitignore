@@ -1,5 +1,7 @@
 #BACKEND
 backend/.gradle
+backend/bin
+
 #FRONTEND
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
