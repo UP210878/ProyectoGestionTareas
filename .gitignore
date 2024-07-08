@@ -1,7 +1,7 @@
 #BACKEND
-backend/.gradle
-backend/bin
-backend/build
+backend/.gradle/
+backend/bin/
+backend/build/
 
 
 #FRONTEND
