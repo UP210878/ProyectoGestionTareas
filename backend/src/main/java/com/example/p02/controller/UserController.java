@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import com.example.p02.model.User;
 import com.example.p02.service.UserService;
@@ -21,21 +23,21 @@ public class UserController {
 
     public UserController(@Autowired UserService userService) {
     this.userService = userService;
-  }
+  };
 
-    @PostMapping("/register") 
+  @PostMapping("/register") 
   public String registerUser(@RequestBody User user) {
     userService.saveUser(user);
     return "User Registered";
-  }
+  };
 
   @PostMapping("/login")
-  public String loginUser(@RequestBody User user){
+  public ResponseEntity<String> loginUser(@RequestBody User user){
     User existingUser = userService.findByUsername(user.getUsername());
     if (existingUser != null && userService.checkPasswd(existingUser, user.getPassword())) {
-      return "Login Successful";
+      return ResponseEntity.ok("Login Successful");
     } else {
-      return "User doesn't exist";
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid information");
   }
-  }
+  };
 }
