@@ -34,7 +34,16 @@ public class UserService {
     public void saveUser(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);  // Altas y Cambios
-}
+    }
+
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
+
+    }
+
+    public boolean checkPasswd(User user, String rawPassword){
+        return bCryptPasswordEncoder.matches(rawPassword, user.getPassword());
+    }
 
     
 }

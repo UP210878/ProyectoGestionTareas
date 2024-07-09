@@ -29,4 +29,13 @@ public class UserController {
     return "User Registered";
   }
 
+  @PostMapping("/login")
+  public String loginUser(@RequestBody User user){
+    User existingUser = userService.findByUsername(user.getUsername());
+    if (existingUser != null && userService.checkPasswd(existingUser, user.getPassword())) {
+      return "Login Successful";
+    } else {
+      return "User doesn't exist";
+  }
+  }
 }
