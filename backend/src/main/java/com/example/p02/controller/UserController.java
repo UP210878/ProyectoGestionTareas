@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.example.p02.model.User;
 import com.example.p02.service.UserService;
+import com.example.p02.util.JwtUtil;
 
 @RestController
 @RequestMapping("/api")
@@ -35,9 +36,12 @@ public class UserController {
   public ResponseEntity<String> loginUser(@RequestBody User user){
     User existingUser = userService.findByUsername(user.getUsername());
     if (existingUser != null && userService.checkPasswd(existingUser, user.getPassword())) {
-      return ResponseEntity.ok("Login Successful");
+      String token = JwtUtil.generateToken(existingUser.getUserId());
+      return ResponseEntity.ok().body("{\"token\":\"" + token + "\"}");
     } else {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid information");
   }
   };
+
+
 }

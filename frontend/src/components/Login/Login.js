@@ -18,7 +18,8 @@ const Login = () => {
       });
 
       if (response.ok) {
-        localStorage.setItem('auth', 'true');
+            const token = await response.json();
+            sessionStorage.setItem('token',token)
         navigate('/home');
       } else {
         alert('Invalid credentials');
