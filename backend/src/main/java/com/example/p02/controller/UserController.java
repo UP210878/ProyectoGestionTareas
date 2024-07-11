@@ -13,10 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import com.example.p02.model.User;
 import com.example.p02.service.UserService;
 import com.example.p02.util.JwtUtil;
 
+@Tag(name = "Endpoint Users", description = "Users Log In y Registro")
 @RestController
 @RequestMapping("/api")
 public class UserController {
