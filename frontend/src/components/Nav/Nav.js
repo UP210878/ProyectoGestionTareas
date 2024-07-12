@@ -3,7 +3,9 @@ import { AppBar, Toolbar, Typography, IconButton, Button, ThemeProvider, createT
 import MenuIcon from '@mui/icons-material/Menu';
 import { Link } from 'react-router-dom';
 
-const menuItems = [
+const isAuthenticated = sessionStorage.getItem('token');
+let menuItems;
+!isAuthenticated ? menuItems = [
   {
     link: '/',
     name: 'Inicio',
@@ -15,6 +17,15 @@ const menuItems = [
   {
     link: '/register',
     name: 'Register',
+  }
+]: menuItems = [
+  {
+    link: '/home',
+    name: 'Inicio',
+  },
+  {
+    link: '/logout',
+    name: 'Logout',
   }
 ];
 
