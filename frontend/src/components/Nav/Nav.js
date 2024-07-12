@@ -1,6 +1,7 @@
 import React from 'react';
-import './Nav.css';
-
+import { AppBar, Toolbar, Typography, IconButton, Button, ThemeProvider, createTheme } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import { Link } from 'react-router-dom';
 
 const menuItems = [
   {
@@ -17,8 +18,19 @@ const menuItems = [
   }
 ];
 
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+    primary: {
+      main: '#212121', // Dark gray
+    },
+    secondary: {
+      main: '#f50057', // Pink
+    },
+  },
+});
+
 class Nav extends React.Component {
-  
   renderMenuItems = (selectedItem) => {
     this.setState({
       actualPage: selectedItem
@@ -27,23 +39,24 @@ class Nav extends React.Component {
 
   render() {
     return (
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div className="container-fluid">
-          <a className="navbar-brand" href="/">TodoApp</a>
-          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav">
-              {menuItems.map(item => (
-                <li className="nav-item">
-                  <a className="nav-link" href={item.link}>{item.name}</a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </nav>
+      <ThemeProvider theme={darkTheme}>
+
+      <AppBar position="static">
+        <Toolbar>
+          <IconButton edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            TodoApp
+          </Typography>
+          {menuItems.map((item) => (
+            <Button color="inherit" component={Link} to={item.link} key={item.name}>
+              {item.name}
+            </Button>
+          ))}
+        </Toolbar>
+      </AppBar>
+          </ThemeProvider>
     );
   }
 }
