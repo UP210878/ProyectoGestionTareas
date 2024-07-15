@@ -24,7 +24,7 @@ const Register = () => {
         console.log('User registered successfully');
         navigate("/login");
       } else {
-        console.error('Failed to register user');
+        alert('Failed to register user');
       }
     } catch (error) {
       console.error('Error:', error);
