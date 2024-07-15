@@ -1,33 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { AppBar, Toolbar, Typography, IconButton, Button, ThemeProvider, createTheme } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Link } from 'react-router-dom';
-
-const isAuthenticated = sessionStorage.getItem('token');
-let menuItems;
-!isAuthenticated ? menuItems = [
-  {
-    link: '/',
-    name: 'Inicio',
-  },
-  {
-    link: '/login',
-    name: 'Login',
-  },
-  {
-    link: '/register',
-    name: 'Register',
-  }
-]: menuItems = [
-  {
-    link: '/home',
-    name: 'Inicio',
-  },
-  {
-    link: '/logout',
-    name: 'Logout',
-  }
-];
+import { AuthContext } from '../Common';
 
 const darkTheme = createTheme({
   palette: {
@@ -41,17 +16,35 @@ const darkTheme = createTheme({
   },
 });
 
-class Nav extends React.Component {
-  renderMenuItems = (selectedItem) => {
-    this.setState({
-      actualPage: selectedItem
-    });
-  }
+const Nav = () => {
+  const { isAuthenticated } = useContext(AuthContext);
 
-  render() {
-    return (
-      <ThemeProvider theme={darkTheme}>
+  const menuItems = !isAuthenticated ? [
+    {
+      link: '/',
+      name: 'Inicio',
+    },
+    {
+      link: '/login',
+      name: 'Login',
+    },
+    {
+      link: '/register',
+      name: 'Register',
+    }
+  ] : [
+    {
+      link: '/home',
+      name: 'Inicio',
+    },
+    {
+      link: '/logout',
+      name: 'Logout',
+    }
+  ];
 
+  return (
+    <ThemeProvider theme={darkTheme}>
       <AppBar position="static">
         <Toolbar>
           <IconButton edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
@@ -67,9 +60,8 @@ class Nav extends React.Component {
           ))}
         </Toolbar>
       </AppBar>
-          </ThemeProvider>
-    );
-  }
+    </ThemeProvider>
+  );
 }
 
 export default Nav;
