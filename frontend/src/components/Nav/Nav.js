@@ -11,7 +11,7 @@ const darkTheme = createTheme({
       main: '#212121', // Dark gray
     },
     secondary: {
-      main: '#f50057', // Pink
+      main: '#85C1D9', // Azul
     },
   },
 });
