@@ -14,8 +14,9 @@ import Container from '@mui/material/Container';
 import { AuthContext } from '../Common';
 
 const Login = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isWrong, setError] = useState(false);
   const navigate = useNavigate();
   const { setIsAuthenticated } = useContext(AuthContext);
 
@@ -26,7 +27,7 @@ const Login = () => {
           headers: {
               'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ username, password }),
+          body: JSON.stringify({ username: email, password }),
       });
 
       if (response.ok) {
@@ -35,7 +36,7 @@ const Login = () => {
             setIsAuthenticated(true);
         navigate('/home');
       } else {
-        alert('Invalid credentials');
+        setError(true);
       }
   };
 
@@ -61,13 +62,14 @@ const Login = () => {
               margin="normal"
               required
               fullWidth
-              id="username"
-              label="Username"
-              name="username"
-              autoComplete="username"
+              id="email"
+              label="Email"
+              name="email"
+              autoComplete="email"
               autoFocus
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              error={isWrong}
             />
             <TextField
               margin="normal"
@@ -80,6 +82,7 @@ const Login = () => {
               autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              error={isWrong}
             />
             <Button
               type="submit"
