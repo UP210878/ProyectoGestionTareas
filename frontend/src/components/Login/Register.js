@@ -3,13 +3,14 @@ import './Login.css';
 import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const user = { username, password };
+    const user = { username: username, password, email: email };
 
     try {
       const response = await fetch('http://localhost:8080/api/register', {
@@ -37,9 +38,18 @@ const Register = () => {
         <div>
           <label>Username:</label>
           <input 
-            type="text" 
+            type="user" 
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <label>Email:</label>
+          <input 
+            type="email" 
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>

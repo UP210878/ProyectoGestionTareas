@@ -10,6 +10,7 @@ import jakarta.persistence.Table;
 // import jakarta.persistence.Temporal;
 // import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 // import java.time.LocalDate;
@@ -28,5 +29,8 @@ public class User {
     
     @NotEmpty
     private String password;
- 
+
+    @NotEmpty
+    @Pattern(regexp = "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$", message = "Not valid")
+    private String email;
 }
