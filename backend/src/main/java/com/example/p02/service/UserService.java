@@ -38,11 +38,14 @@ public class UserService {
 
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
-
     }
 
     public boolean checkPasswd(User user, String rawPassword){
         return bCryptPasswordEncoder.matches(rawPassword, user.getPassword());
+    }
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     
