@@ -16,7 +16,8 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [username, setUsername] = useState('');
   const [isMailWrong, setMailWrong] = useState(false);
-  const [isUserWrong, setUserWrong] = useState(false);
+  const [usernameAlreadyExists, setUsernameAlreadyExists] = useState(false);
+  const [emailAlreadyExists, setEmailAlreadyExists] = useState(false);
   const [passwordsMatch, setPasswordsMatch] = useState(true);
   const [isEmailEmpty, setEmailEmpty] = useState(false);
   const [isPasswordEmpty, setPasswordEmpty] = useState(false);
@@ -29,6 +30,8 @@ const Register = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+
 
     setEmailEmpty(email === '');
     setPasswordEmpty(password === '');
@@ -58,7 +61,14 @@ const Register = () => {
         console.log('User registered successfully');
         navigate("/login");
       } else {
-        alert('Failed to register user');
+        const bodyError = await response.text();
+        if (bodyError === 'Email Already Exists') {
+          setEmailAlreadyExists(true);
+        } else if (bodyError === 'Username Already Exists') {
+          setUsernameAlreadyExists(true);
+        } else {
+          console.error('Registration failed')
+        }
       }
     } catch (error) {
       console.error('Error:', error);
@@ -96,9 +106,10 @@ const Register = () => {
             onChange={(e) => {
               setUsername(e.target.value);
               setUsernameEmpty(false);
+              setUsernameAlreadyExists(false);
             }}
-            error={isUsernameEmpty}
-            helperText={isUsernameEmpty && "Username cannot be empty, try again."}
+            error={isUsernameEmpty || usernameAlreadyExists}
+            helperText={(usernameAlreadyExists && "Username already in use, please choose another one") || (isUsernameEmpty && "Username cannot be empty, try again.")}
           />
           <TextField
             margin="normal"
@@ -113,9 +124,10 @@ const Register = () => {
               setEmail(e.target.value);
               setMailWrong(e.target.value !== '' && !emailRegex.test(e.target.value));
               setEmailEmpty(false);
+              setEmailAlreadyExists(false);
             }}
-            error={isMailWrong || isEmailEmpty}
-            helperText={(isMailWrong && "Please input a valid email") || (isEmailEmpty && "Email cannot be empty, try again.")}
+            error={emailAlreadyExists || isMailWrong || isEmailEmpty}
+            helperText={(emailAlreadyExists && "Email already in use, please choose another one") || (isMailWrong && "Please input a valid email") || (isEmailEmpty && "Email cannot be empty, try again.")}
           />
           <TextField
             margin="normal"

@@ -31,9 +31,18 @@ public class UserController {
   };
 
   @PostMapping("/register") 
-  public String registerUser(@RequestBody User user) {
-    userService.saveUser(user);
-    return "User Registered";
+  public ResponseEntity<String> registerUser(@RequestBody User user) {
+    User existingMail = userService.findByEmail(user.getEmail());
+    User existingUser = userService.findByUsername(user.getUsername());
+    if (existingMail != null) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email Already Exists");
+    } else if (existingUser != null) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username Already Exists");
+    } else {
+      userService.saveUser(user);
+      return ResponseEntity.status(HttpStatus.OK).body("User Registered");
+
+    }
   };
 
   @PostMapping("/login")
@@ -41,7 +50,7 @@ public class UserController {
     User existingUser = userService.findByEmail(user.getEmail());
     if (existingUser != null && userService.checkPasswd(existingUser, user.getPassword())) {
       String token = JwtUtil.generateToken(existingUser.getUserId());
-      return ResponseEntity.ok().body("{\"token\":\"" + token + "\"}");
+      return ResponseEntity.status(HttpStatus.OK).body("{\"token\":\"" + token + "\"}");
     } else {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid information");
   }
