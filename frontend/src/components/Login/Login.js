@@ -8,7 +8,7 @@ import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import PersonIcon from '@mui/icons-material/Person';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { AuthContext } from '../Common';
@@ -16,9 +16,13 @@ import { AuthContext } from '../Common';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isWrong, setError] = useState(false);
+  const [inputCorrect, setInputCorrect] = useState(true);
+  const [isMailWrong, setMailWrong] = useState(false);
+
   const navigate = useNavigate();
   const { setIsAuthenticated } = useContext(AuthContext);
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const handleSubmit = async (e) => {
       e.preventDefault();
@@ -36,7 +40,7 @@ const Login = () => {
             setIsAuthenticated(true);
         navigate('/home');
       } else {
-        setError(true);
+        setInputCorrect(false);
       }
   };
 
@@ -52,10 +56,10 @@ const Login = () => {
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
+            <PersonIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Log in
+            Sign In
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
@@ -68,8 +72,13 @@ const Login = () => {
               autoComplete="email"
               autoFocus
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              error={isWrong}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setMailWrong(e.target.value !== '' && !emailRegex.test(e.target.value));
+                setInputCorrect(true);
+              }}
+              error={isMailWrong || !inputCorrect}
+              helperText={(isMailWrong && "Please input a valid email.")}
             />
             <TextField
               margin="normal"
@@ -81,8 +90,12 @@ const Login = () => {
               id="password"
               autoComplete="current-password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              error={isWrong}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setInputCorrect(true);
+              }}
+              error={!inputCorrect}
+              helperText={(!inputCorrect && "Username/Password are incorrect.")}
             />
             <Button
               type="submit"
@@ -90,7 +103,7 @@ const Login = () => {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Log In
+              Sign In
             </Button>
             <Grid container>
               <Grid item xs>
