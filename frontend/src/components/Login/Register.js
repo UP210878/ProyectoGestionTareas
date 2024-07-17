@@ -42,7 +42,7 @@ const Register = () => {
       return;
     }
 
-    if (!passwordsMatch) {
+    if (!passwordsMatch || isMailWrong) {
       return;
     }
 
