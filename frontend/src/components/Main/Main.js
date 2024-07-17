@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import Login, { Register } from '../Login';
 import { Routes, Route } from 'react-router-dom';
 import Category from '../Category'
-import {PrivateRoute, LoginRoutes} from '../Common';
+import {PrivateRoute, LoginRoutes, Error404} from '../Common';
+import Landing from '../Landing';
 
 class Main extends Component {
 
@@ -15,6 +16,8 @@ class Main extends Component {
         <Route path="/login" element={<LoginRoutes element={Login} />} />
         <Route path="/register" element={<LoginRoutes element={Register} />} />
         <Route path="/home" element={<PrivateRoute element={Category} />} />
+        <Route path="/" element={<Landing/>} />
+        <Route path="*" element={<Error404/>}/>
       </Routes>
       
     );
