@@ -42,7 +42,7 @@ const Register = () => {
       return;
     }
 
-    if (!passwordsMatch) {
+    if (!passwordsMatch || isMailWrong) {
       return;
     }
 
@@ -90,7 +90,7 @@ const Register = () => {
           <PersonIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Register
+          Sign Up
         </Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <TextField
@@ -170,7 +170,7 @@ const Register = () => {
             variant="contained"
             sx={{ mt: 3, mb: 2 , bgcolor: 'primary.main'}}
           >
-            Register
+            Sign Up
           </Button>
         </Box>
       </Box>
