@@ -1,17 +1,10 @@
 import React, { useState, useContext } from 'react';
 import './Login.css';
-import { useNavigate } from 'react-router-dom';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import PersonIcon from '@mui/icons-material/Person';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
+import LoginIcon from '@mui/icons-material/Login';
 import { AuthContext } from '../Common';
+import { Paper, Container, Typography, Box, Grid, Link, TextField, CssBaseline, Button, Avatar} from '@mui/material'
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -47,12 +40,15 @@ const Login = () => {
   return (
       <Container component="main" maxWidth="xs">
         <CssBaseline />
+        <Paper elevation={5}>
         <Box
           sx={{
             marginTop: 8,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            padding: 4,
+            paddingBlockEnd: 15,
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
@@ -104,18 +100,20 @@ const Login = () => {
               sx={{ mt: 3, mb: 2 }}
             >
               Sign In
+              <LoginIcon sx={{mx:1}}/>
             </Button>
             <Grid container>
               <Grid item xs>
               </Grid>
               <Grid item>
-                <Link href="/register" variant="body2">
+                <Link component={RouterLink} to="/register" variant="body2">
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
             </Grid>
           </Box>
         </Box>
+        </Paper>
       </Container>
   );
 };
