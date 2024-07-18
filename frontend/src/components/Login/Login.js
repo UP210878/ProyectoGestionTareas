@@ -47,8 +47,8 @@ const Login = () => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            padding: 4,
-            paddingBlockEnd: 15,
+            padding: 3,
+            paddingBlockEnd: 10,
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>

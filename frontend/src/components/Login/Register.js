@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './Login.css';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import PersonIcon from '@mui/icons-material/Person';
-import { Grid, Container, Typography, Box, TextField, CssBaseline, Button, Avatar, Link } from '@mui/material';
+import { Grid, Container, Typography, Box, TextField, CssBaseline, Button, Avatar, Link, Paper } from '@mui/material';
 
 const Register = () => {
   const [email, setEmail] = useState('');
@@ -72,9 +72,9 @@ const Register = () => {
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
+      <Paper elevation={5}>
       <Box
         sx={{
-          boxShadow: 5,
           marginTop: 8,
           padding: 3,
           display: 'flex',
@@ -173,12 +173,12 @@ const Register = () => {
               </Grid>
               <Grid item>
                 <Link component={RouterLink} to="/login" variant="body2">
-                  {"Already have an account"}
+                  {"I already have an account"}
                 </Link>
               </Grid>
             </Grid>
         </Box>
-      </Box>
+      </Box></Paper>
     </Container>
   );
 }
