@@ -11,13 +11,13 @@ const Logout = () => {
   const logToken = sessionStorage.getItem('token');
 
 
+  setIsAuthenticated(false);
   useEffect(() => {
     const timer = setTimeout(() => {
-      setIsAuthenticated(false);
       navigate('/login');
     }, 2000);
     return () => clearTimeout(timer);
-  }, [navigate,setIsAuthenticated]);
+  }, [navigate]);
 
   if (logToken!==null) {
     sessionStorage.removeItem('token');
