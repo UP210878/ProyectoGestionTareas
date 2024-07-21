@@ -43,7 +43,7 @@ const Register = () => {
     const user = { username: username, password, email: email };
 
     try {
-      const response = await fetch('http://localhost:8080/api/register', {
+      const response = await fetch('http://localhost:8080/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -65,7 +65,7 @@ const Register = () => {
         }
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error fetching from the api:', error);
     }
   };
 
