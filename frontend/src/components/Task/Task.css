@@ -1,0 +1,45 @@
+.task {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+  
+  .task h3 {
+    margin: 0 0 10px 0;
+  }
+  
+  .activity {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+  
+  .activity input {
+    margin-right: 5px;
+  }
+  
+  .edit-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  
+  .edit-btn:hover {
+    background-color: #0056b3;
+  }
+  
+  .complete-toggle {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+  }
+  
+  .complete-toggle label {
+    margin-right: 10px;
+  }
+  
