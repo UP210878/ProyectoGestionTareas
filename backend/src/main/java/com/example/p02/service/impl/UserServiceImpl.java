@@ -7,23 +7,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.example.p02.dto.UserRegisterDTO;
 import com.example.p02.model.User;
-import org.modelmapper.ModelMapper;
 import com.example.p02.repository.UserRepository;
 import com.example.p02.service.UserService;
 
 @Service
 public class UserServiceImpl implements UserService{
-    private final UserRepository userRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder; //Encryption for passwords
-    private final ModelMapper modelMapper;
+    private UserRepository userRepository;
+    private BCryptPasswordEncoder bCryptPasswordEncoder; //Encryption for passwords
 
     @Autowired
-    public UserServiceImpl(UserRepository clienteRepository, BCryptPasswordEncoder bCryptPasswordEncoder, ModelMapper modelMapper) {
+    public UserServiceImpl(UserRepository clienteRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = clienteRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.modelMapper = modelMapper;
     }
 
     public List<User> getUsers() {
@@ -42,11 +38,6 @@ public class UserServiceImpl implements UserService{
     public void saveUser(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);  // Altas y Cambios
-    }
-
-    public void saveUserDTO(UserRegisterDTO userRegisterDTO) {
-    User user = modelMapper.map(userRegisterDTO, User.class);
-    saveUser(user);
     }
 
     public User findByUsername(String username) {

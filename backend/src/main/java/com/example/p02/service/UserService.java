@@ -2,8 +2,6 @@ package com.example.p02.service;
 
 import java.util.List;
 import java.util.Optional;
-
-import com.example.p02.dto.UserRegisterDTO;
 import com.example.p02.model.User;
 
 public interface UserService {
@@ -15,8 +13,6 @@ public interface UserService {
     public void deleteUser(Long id);
 
     public void saveUser(User user);
-    
-    public void saveUserDTO(UserRegisterDTO userDTO);
 
     public User findByUsername(String username);
 
