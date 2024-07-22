@@ -52,5 +52,14 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-    
+    public void updateUser(Long id, User newData){
+        Optional<User> userOptional = userRepository.findById(id);
+        User userToUpdate = userOptional.get();
+        userToUpdate.setUsername(newData.getUsername());
+        userToUpdate.setEmail(newData.getEmail());
+        if (newData.getPassword() != null && !newData.getPassword().isEmpty()) {
+            userToUpdate.setPassword(bCryptPasswordEncoder.encode(newData.getPassword()));
+        }
+        userRepository.save(userToUpdate);
+    }
 }

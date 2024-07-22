@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 // import jakarta.validation.Valid;
 // import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -79,12 +80,23 @@ public class UserController {
 
   @DeleteMapping("/delUser/{id}")
   public ResponseEntity<String> delUser(@PathVariable Long id) throws ExceptionResourceNotFound {
-    Optional<User> userOptional = userService.getUser(id);
-    if (userOptional.isPresent()) {
+    Optional<User> userToDelete = userService.getUser(id);
+    if (userToDelete.isPresent()) {
       userService.deleteUser(id);
-      return ResponseEntity.ok("User " + id + " succesfully deleted");
+      return ResponseEntity.status(HttpStatus.NO_CONTENT).body("User " + id + " succesfully deleted");
     } else {
       throw new ExceptionResourceNotFound("User " + id  + " not found within the database. Unable to delete");
+    }
+  }
+
+  @PutMapping("/updateUser/{id}")
+  public ResponseEntity<String> updateUser(@PathVariable Long id, @RequestBody User data) throws ExceptionResourceNotFound {
+    Optional<User> userToUpdate = userService.getUser(id);
+    if (userToUpdate.isPresent()) {
+      userService.updateUser(id,data );
+      return ResponseEntity.status(HttpStatus.NO_CONTENT).body("User " + id + " updated");
+    } else {
+      throw new ExceptionResourceNotFound("User " + id  + " not found within the database. Unable to update");
     }
   }
 
