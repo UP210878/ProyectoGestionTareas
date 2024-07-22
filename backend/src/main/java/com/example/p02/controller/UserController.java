@@ -1,6 +1,7 @@
 package com.example.p02.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 // import org.springframework.stereotype.Controller;
@@ -19,7 +20,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 
-import com.example.p02.exception.ExcepcionRecursoNoEncontrado;
+import com.example.p02.exception.ExceptionResourceNotFound;
 import com.example.p02.model.User;
 import com.example.p02.service.UserService;
 import com.example.p02.util.JwtUtil;
@@ -67,7 +68,24 @@ public class UserController {
   }
 
   @GetMapping({ "/getUser/{id}" })
-  public ResponseEntity<Optional<User>> getUser(@PathVariable Long id) {
-    return ResponseEntity.ok(userService.getUser(id));
+  public ResponseEntity<Optional<User>> getUser(@PathVariable Long id) throws ExceptionResourceNotFound {
+    Optional<User> userOptional = userService.getUser(id);
+    if (userOptional.isPresent()) {
+      return ResponseEntity.ok(userService.getUser(id));
+    } else {
+      throw new ExceptionResourceNotFound("User " + id  + " not found within the database.");
+    }
   };
+
+  @DeleteMapping("/delUser/{id}")
+  public ResponseEntity<String> delUser(@PathVariable Long id) throws ExceptionResourceNotFound {
+    Optional<User> userOptional = userService.getUser(id);
+    if (userOptional.isPresent()) {
+      userService.deleteUser(id);
+      return ResponseEntity.ok("User " + id + " succesfully deleted");
+    } else {
+      throw new ExceptionResourceNotFound("User " + id  + " not found within the database. Unable to delete");
+    }
+  }
+
 }
