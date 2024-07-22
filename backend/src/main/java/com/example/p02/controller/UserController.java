@@ -1,5 +1,6 @@
 package com.example.p02.controller;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,14 +14,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
+// import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import io.swagger.v3.oas.annotations.Operation;
+// import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 
+import com.example.p02.dto.UserRegisterDTO;
 import com.example.p02.exception.ExceptionResourceNotFound;
 import com.example.p02.model.User;
 import com.example.p02.service.UserService;
@@ -31,24 +33,27 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/auth")
 public class UserController {
-    private final UserService userService;
+  
+  private final UserService userService;
+  private final ModelMapper modelMapper;
 
-    public UserController(@Autowired UserService userService) {
+    public UserController(@Autowired UserService userService, ModelMapper modelMapper) {
     this.userService = userService;
+    this.modelMapper = modelMapper;
   };
 
   @PostMapping("/register") 
-  public ResponseEntity<String> registerUser(@RequestBody User user) {
-    User existingMail = userService.findByEmail(user.getEmail());
-    User existingUser = userService.findByUsername(user.getUsername());
+  public ResponseEntity<String> registerUser(@RequestBody UserRegisterDTO userDTO) {
+    User existingMail = userService.findByEmail(userDTO.getEmail());
+    User existingUser = userService.findByUsername(userDTO.getUsername());
     if (existingMail != null) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email Already Exists");
     } else if (existingUser != null) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username Already Exists");
     } else {
+      User user = modelMapper.map(userDTO, User.class);
       userService.saveUser(user);
       return ResponseEntity.status(HttpStatus.OK).body("User Registered");
-
     }
   };
 
