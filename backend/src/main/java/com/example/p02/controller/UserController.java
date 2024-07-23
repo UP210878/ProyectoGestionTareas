@@ -21,7 +21,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 
+import com.example.p02.dto.UserLoginDTO;
+import com.example.p02.dto.UserRegisterDTO;
 import com.example.p02.exception.ExceptionResourceNotFound;
+import com.example.p02.mapper.UserMapper;
 import com.example.p02.model.User;
 import com.example.p02.service.UserService;
 import com.example.p02.util.JwtUtil;
@@ -32,20 +35,23 @@ import java.util.Optional;
 @RequestMapping("/api/auth")
 public class UserController {
     private final UserService userService;
+    private final UserMapper userMapper;
 
-    public UserController(@Autowired UserService userService) {
+    public UserController(@Autowired UserService userService, UserMapper userMapper) {
     this.userService = userService;
+    this.userMapper = userMapper;
   };
 
   @PostMapping("/register") 
-  public ResponseEntity<String> registerUser(@RequestBody User user) {
-    User existingMail = userService.findByEmail(user.getEmail());
-    User existingUser = userService.findByUsername(user.getUsername());
+  public ResponseEntity<String> registerUser(@RequestBody UserRegisterDTO userRegisterDTO) {
+    User existingMail = userService.findByEmail(userRegisterDTO.getEmail());
+    User existingUser = userService.findByUsername(userRegisterDTO.getUsername());
     if (existingMail != null) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email Already Exists");
     } else if (existingUser != null) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username Already Exists");
     } else {
+      User user = userMapper.toUser(userRegisterDTO);
       userService.saveUser(user);
       return ResponseEntity.status(HttpStatus.OK).body("User Registered");
 
@@ -53,7 +59,7 @@ public class UserController {
   };
 
   @PostMapping("/login")
-  public ResponseEntity<String> loginUser(@RequestBody User user){
+  public ResponseEntity<String> loginUser(@RequestBody UserLoginDTO user){
     User existingUser = userService.findByEmail(user.getEmail());
     if (existingUser != null && userService.checkPasswd(existingUser, user.getPassword())) {
       String token = JwtUtil.generateToken(existingUser.getUserId());

@@ -11,6 +11,8 @@ import com.example.p02.model.User;
 import com.example.p02.repository.UserRepository;
 import com.example.p02.service.UserService;
 
+import java.time.LocalDate;
+
 @Service
 public class UserServiceImpl implements UserService{
     private UserRepository userRepository;
@@ -37,6 +39,8 @@ public class UserServiceImpl implements UserService{
 
     public void saveUser(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        user.setCreated_at(LocalDate.now());
+        user.setUpdated_at(LocalDate.now());
         userRepository.save(user);  // Altas y Cambios
     }
 
