@@ -2,55 +2,23 @@ package com.example.p02.service;
 
 import java.util.List;
 import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import com.example.p02.exception.ExceptionResourceNotFound;
 import com.example.p02.model.User;
-import com.example.p02.repository.UserRepository;
 
-@Service
-public class UserService {
-    private final UserRepository userRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder; //Encryption for passwords
+public interface UserService {
 
-    @Autowired
-    public UserService(UserRepository clienteRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
-        this.userRepository = clienteRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-    }
+    public List<User> getUsers();
 
-    public List<User> getUsers() {
-        return userRepository.findAll();
-    }
-
-    public Optional<User> getUser(Long id) {
-        return userRepository.findById(id);
-        }
+    public Optional<User> getUser(Long id);
     
-    
-    public void deleteUser(Long id) {
-        userRepository.deleteById(id);
-    }
+    public void deleteUser(Long id);
 
-    public void saveUser(User user) {
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        userRepository.save(user);  // Altas y Cambios
-    }
+    public void saveUser(User user);
 
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
-    }
+    public User findByUsername(String username);
 
-    public boolean checkPasswd(User user, String rawPassword){
-        return bCryptPasswordEncoder.matches(rawPassword, user.getPassword());
-    }
+    public boolean checkPasswd(User user, String rawPassword);
 
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
+    public User findByEmail(String email);
 
-    
+    public void updateUser(Long id, User newData);
 }
