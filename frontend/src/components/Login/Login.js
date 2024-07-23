@@ -3,19 +3,26 @@ import './Login.css';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import PersonIcon from '@mui/icons-material/Person';
 import LoginIcon from '@mui/icons-material/Login';
-import { AuthContext } from '../Common';
-import { Paper, Container, Typography, Box, Grid, Link, TextField, CssBaseline, Button, Avatar} from '@mui/material'
+import { AuthContext, ModeContext } from '../Common';
+import { Paper, Container, Typography, Box, Grid, Link, TextField, CssBaseline, Button, Avatar, createTheme, ThemeProvider} from '@mui/material'
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [inputCorrect, setInputCorrect] = useState(true);
   const [isMailWrong, setMailWrong] = useState(false);
+  const { isDarkMode } = useContext(ModeContext);
 
   const navigate = useNavigate();
   const { setIsAuthenticated } = useContext(AuthContext);
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const currentTheme = createTheme({
+    palette: {
+      mode: isDarkMode? 'dark':'light',
+    },
+  });
 
   const handleSubmit = async (e) => {
       e.preventDefault();
@@ -38,6 +45,7 @@ const Login = () => {
   };
 
   return (
+    <ThemeProvider theme={currentTheme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Paper elevation={5}>
@@ -51,7 +59,7 @@ const Login = () => {
             paddingBlockEnd: 10,
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+          <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
             <PersonIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
@@ -115,6 +123,7 @@ const Login = () => {
         </Box>
         </Paper>
       </Container>
+      </ThemeProvider>
   );
 };
 
