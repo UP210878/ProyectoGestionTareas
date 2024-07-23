@@ -1,11 +1,18 @@
 import React, { useEffect, useContext } from 'react';
-import { Typography, Container, Box, CircularProgress } from '@mui/material';
+import { Typography, Container, Box, CircularProgress, createTheme, ThemeProvider, CssBaseline } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../Common';
+import { AuthContext, ModeContext } from '../Common';
 
 const Logout = () => {
   const navigate = useNavigate();
   const { setIsAuthenticated } = useContext(AuthContext);
+  const { isDarkMode } = useContext(ModeContext);
+
+  const currentTheme = createTheme({
+    palette: {
+      mode: isDarkMode? 'dark':'light',
+    },
+  });
 
   useEffect(() => {
     const logToken = sessionStorage.getItem('token');
@@ -23,7 +30,9 @@ const Logout = () => {
   }, [navigate, setIsAuthenticated]);
 
   return (
+  <ThemeProvider theme={currentTheme}>
     <Container maxWidth="sm" style={{ textAlign: 'center', marginTop: '100px' }}>
+    <CssBaseline />
       <Box
         sx={{
           marginTop: 8,
@@ -41,6 +50,7 @@ const Logout = () => {
         <CircularProgress color="primary" />
       </Box>
     </Container>
+  </ThemeProvider>
   );
 }
 
