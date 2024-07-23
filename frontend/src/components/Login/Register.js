@@ -1,46 +1,23 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './Login.css';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import PersonIcon from '@mui/icons-material/Person';
 import { Grid, Container, Typography, Box, TextField, CssBaseline, Button, Avatar, Link, Paper } from '@mui/material';
+import { useForm, Controller} from 'react-hook-form';
 
 const Register = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [username, setUsername] = useState('');
-  const [isMailWrong, setMailWrong] = useState(false);
-  const [usernameAlreadyExists, setUsernameAlreadyExists] = useState(false);
-  const [emailAlreadyExists, setEmailAlreadyExists] = useState(false);
-  const [passwordsMatch, setPasswordsMatch] = useState(true);
-  const [isEmailEmpty, setEmailEmpty] = useState(false);
-  const [isPasswordEmpty, setPasswordEmpty] = useState(false);
-  const [isConfirmPasswordEmpty, setConfirmPasswordEmpty] = useState(false);
-  const [isUsernameEmpty, setUsernameEmpty] = useState(false);
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
+  const { handleSubmit, control, setError, formState: { errors } } = useForm();
   const navigate = useNavigate();
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const onSubmit = async (data) => {
+    const { email, password, confirmPassword, username } = data;
 
-
-
-    setEmailEmpty(email === '');
-    setPasswordEmpty(password === '');
-    setConfirmPasswordEmpty(confirmPassword === '');
-    setUsernameEmpty(username === '');
-
-    if (email === '' || password === '' || username === '' || confirmPassword === '') {
+    if (password !== confirmPassword) {
+      setError('confirmPassword', { type: 'manual', message: 'Passwords do not match' });
       return;
     }
 
-    if (!passwordsMatch || isMailWrong) {
-      return;
-    }
-
-    const user = { username: username, password, email: email };
+    const user = { username, password, email };
 
     try {
       const response = await fetch('http://localhost:8080/api/auth/register', {
@@ -57,9 +34,9 @@ const Register = () => {
       } else {
         const bodyError = await response.text();
         if (bodyError === 'Email Already Exists') {
-          setEmailAlreadyExists(true);
+          setError('email', { type: 'manual', message: 'Email already in use, please choose another one' });
         } else if (bodyError === 'Username Already Exists') {
-          setUsernameAlreadyExists(true);
+          setError('username', { type: 'manual', message: 'Username already in use, please choose another one' });
         } else {
           console.error('Registration failed')
         }
@@ -88,77 +65,87 @@ const Register = () => {
         <Typography component="h1" variant="h5">
           Sign Up
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="username"
-            label="Username"
+        <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 1 }}>
+        <Controller
             name="username"
-            autoComplete="username"
-            autoFocus
-            value={username}
-            onChange={(e) => {
-              setUsername(e.target.value);
-              setUsernameEmpty(false);
-              setUsernameAlreadyExists(false);
-            }}
-            error={isUsernameEmpty || usernameAlreadyExists}
-            helperText={(usernameAlreadyExists && "Username already in use, please choose another one") || (isUsernameEmpty && "Username cannot be empty, try again.")}
+            control={control}
+            defaultValue=""
+            rules={{ required: 'Username cannot be empty, try again.' }}
+            render={({ field }) => (
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                label="Username"
+                placeholder='Username'
+                autoFocus
+                {...field}
+                error={!!errors.username}
+                helperText={errors.username ? errors.username.message : ''}
+              />
+            )}
           />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email"
+          <Controller
             name="email"
-            autoComplete="email"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              setMailWrong(e.target.value !== '' && !emailRegex.test(e.target.value));
-              setEmailEmpty(false);
-              setEmailAlreadyExists(false);
+            control={control}
+            defaultValue=""
+            rules={{
+              required: 'Email cannot be empty, try again.',
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: 'Please input a valid email',
+              },
             }}
-            error={emailAlreadyExists || isMailWrong || isEmailEmpty}
-            helperText={(emailAlreadyExists && "Email already in use, please choose another one") || (isMailWrong && "Please input a valid email") || (isEmailEmpty && "Email cannot be empty, try again.")}
+            render={({ field }) => (
+              <TextField
+                margin="normal"
+                required
+                placeholder='Example@gmail.com'
+                fullWidth
+                label="Email"
+                {...field}
+                error={!!errors.email}
+                helperText={errors.email ? errors.email.message : ''}
+              />
+            )}
           />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
+          <Controller
             name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-              setPasswordsMatch(e.target.value === '' || confirmPassword === e.target.value || confirmPassword === '');
-              setPasswordEmpty(false);
-            }}
-            error={!passwordsMatch || isPasswordEmpty}
-            helperText={(isPasswordEmpty && "Please input a password") || (!passwordsMatch && "Passwords do not match")}
+            control={control}
+            defaultValue=""
+            rules={{ required: 'Please input a password' }}
+            render={({ field }) => (
+              <TextField
+                margin="normal"
+                required
+                placeholder='Password'
+                fullWidth
+                type="password"
+                label="Password"
+                {...field}
+                error={!!errors.password}
+                helperText={errors.password ? errors.password.message : ''}
+              />
+            )}
           />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
+          <Controller
             name="confirmPassword"
-            label="Confirm Password"
-            type="password"
-            id="confirmPassword"
-            value={confirmPassword}
-            onChange={(e) => {
-              setConfirmPassword(e.target.value);
-              setPasswordsMatch(e.target.value === '' || password === e.target.value);
-              setConfirmPasswordEmpty(false);
-            }}
-            error={!passwordsMatch || isConfirmPasswordEmpty}
-            helperText={(isConfirmPasswordEmpty && "Please confirm your password") || (!passwordsMatch && "Passwords do not match")}
+            control={control}
+            defaultValue=""
+            rules={{ required: 'Please confirm your password' }}
+            render={({ field }) => (
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                type="password"
+                placeholder='Password'
+                label="Confirm Password"
+                {...field}
+                error={!!errors.confirmPassword}
+                helperText={errors.confirmPassword ? errors.confirmPassword.message : ''}
+              />
+            )}
           />
           <Button
             type="submit"
