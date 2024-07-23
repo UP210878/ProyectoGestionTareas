@@ -1,13 +1,21 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import './Login.css';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import PersonIcon from '@mui/icons-material/Person';
-import { Grid, Container, Typography, Box, TextField, CssBaseline, Button, Avatar, Link, Paper } from '@mui/material';
+import { Grid, Container, Typography, Box, TextField, CssBaseline, Button, Avatar, Link, Paper, createTheme, ThemeProvider } from '@mui/material';
 import { useForm, Controller} from 'react-hook-form';
+import { ModeContext } from '../Common';
 
 const Register = () => {
   const { handleSubmit, control, setError, formState: { errors } } = useForm();
   const navigate = useNavigate();
+  const { isDarkMode } = useContext(ModeContext);
+
+  const currentTheme = createTheme({
+    palette: {
+      mode: isDarkMode? 'dark':'light',
+    },
+  });
 
   const onSubmit = async (data) => {
     const { email, password, confirmPassword, username } = data;
@@ -47,6 +55,7 @@ const Register = () => {
   };
 
   return (
+    <ThemeProvider theme={currentTheme}>
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <Paper elevation={5}>
@@ -167,6 +176,7 @@ const Register = () => {
         </Box>
       </Box></Paper>
     </Container>
+    </ThemeProvider>
   );
 }
 

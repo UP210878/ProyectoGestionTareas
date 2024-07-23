@@ -1,14 +1,16 @@
 import './App.css';
 import Main from '../Main';
 import Nav from '../Nav';
-import { AuthProvider } from '../Common';
+import { AuthProvider, ModeProvider } from '../Common';
 
 function App() {
   return (
 <div>
   <AuthProvider>
-  <Nav />
-  <Main />
+    <ModeProvider>
+      <Nav />
+      <Main />
+    </ModeProvider>
   </AuthProvider>
 </div>
   );
