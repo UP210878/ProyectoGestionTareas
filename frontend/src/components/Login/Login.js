@@ -35,9 +35,9 @@ const Login = () => {
     es : {
       signIn: 'Iniciar Sesión',
       email: 'Correo electrónico',
-      password: 'Constraseña',
+      password: 'Contraseña',
       emailError: 'Porfavor ingrese un correo electrónico',
-      passwordError: 'Porfavor ingrese una constraseña',
+      passwordError: 'Porfavor ingrese una contraseña',
       emailRegexError: 'Correo electrónico invalido',
       dontHaveAccount: 'No tengo cuenta',
     },

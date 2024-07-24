@@ -41,7 +41,7 @@ const Register = () => {
       username: 'Nombre de Usuario',
       email: 'Correo Electrónico',
       password: 'Contraseña',
-      confirmPassword: 'Confirmar Constraseña',
+      confirmPassword: 'Confirmar Contraseña',
       alreadyHaveAnAccount: 'Ya tengo una cuenta',
       usernameError: 'Porfavor ingrese un usuario',
       emailError: 'Porfavor ingrese su correo electrónico',
