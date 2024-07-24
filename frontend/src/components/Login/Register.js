@@ -50,7 +50,8 @@ const Register = () => {
         }
       }
     } catch (error) {
-      console.error('Error fetching from the api:', error);
+      console.error('Error fetching from the api');
+      setError('general', { type: 'manual', message: 'Unable to connect to database' });
     }
   };
 
@@ -89,7 +90,7 @@ const Register = () => {
                 placeholder='Username'
                 autoFocus
                 {...field}
-                error={!!errors.username}
+                error={!!errors.username || !!errors.general}
                 helperText={errors.username ? errors.username.message : ''}
               />
             )}
@@ -113,7 +114,7 @@ const Register = () => {
                 fullWidth
                 label="Email"
                 {...field}
-                error={!!errors.email}
+                error={!!errors.email || !!errors.general}
                 helperText={errors.email ? errors.email.message : ''}
               />
             )}
@@ -132,7 +133,7 @@ const Register = () => {
                 type="password"
                 label="Password"
                 {...field}
-                error={!!errors.password}
+                error={!!errors.password || !!errors.general}
                 helperText={errors.password ? errors.password.message : ''}
               />
             )}
@@ -151,11 +152,16 @@ const Register = () => {
                 placeholder='Password'
                 label="Confirm Password"
                 {...field}
-                error={!!errors.confirmPassword}
+                error={!!errors.confirmPassword || !!errors.general}
                 helperText={errors.confirmPassword ? errors.confirmPassword.message : ''}
               />
             )}
           />
+          {errors.general && (
+            <Typography color="error" variant="body2" align="center">
+              {errors.general.message}
+            </Typography>
+          )}
           <Button
             type="submit"
             fullWidth
