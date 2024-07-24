@@ -4,12 +4,14 @@ import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import PersonIcon from '@mui/icons-material/Person';
 import { Grid, Container, Typography, Box, TextField, CssBaseline, Button, Avatar, Link, Paper, createTheme, ThemeProvider } from '@mui/material';
 import { useForm, Controller} from 'react-hook-form';
-import { ModeContext } from '../Common';
+import { ModeContext, LanguageContext } from '../Common';
 
 const Register = () => {
   const { handleSubmit, control, setError, formState: { errors } } = useForm();
   const navigate = useNavigate();
   const { isDarkMode } = useContext(ModeContext);
+  const { currentLanguage } = useContext(LanguageContext);
+
 
   const currentTheme = createTheme({
     palette: {
@@ -17,11 +19,46 @@ const Register = () => {
     },
   });
 
+  const labels = {
+    en: {
+      signUp: 'Sign Up',
+      username: 'Username',
+      email: 'Email',
+      password: 'Password',
+      confirmPassword: 'Confirm Password',
+      alreadyHaveAnAccount: 'I already have an account',
+      usernameError: 'Please input a username',
+      emailError: 'Please input an email',
+      emailRegexError: 'Invalid email',
+      passwordError: 'Please input a password',
+      confirmPasswordError: 'Please confirm your password',
+      passwordMismatch: 'Password do not match',
+      emailInUse: 'Email already in use, please choose another one',
+      usernameInUse: 'Username already in use, please choose another one',
+    },
+    es: {
+      signUp: 'Registrarse',
+      username: 'Nombre de Usuario',
+      email: 'Correo Electrónico',
+      password: 'Contraseña',
+      confirmPassword: 'Confirmar Constraseña',
+      alreadyHaveAnAccount: 'Ya tengo una cuenta',
+      usernameError: 'Porfavor ingrese un usuario',
+      emailError: 'Porfavor ingrese su correo electrónico',
+      emailRegexError: 'Correo electrónico invalido',
+      passwordError: 'Porfavor ingrese una contraseña',
+      confirmPasswordError: 'Porfavor confirme su contraseña',
+      passwordMismatch: 'Las contraseñas no concuerdan',
+      emailInUse: 'Correo ya en uso, porfavor utilize otro',
+      usernameInUse: 'Usuario ya en uso, porfavor utilize otro',
+    },
+  };
+
   const onSubmit = async (data) => {
     const { email, password, confirmPassword, username } = data;
 
     if (password !== confirmPassword) {
-      setError('confirmPassword', { type: 'manual', message: 'Passwords do not match' });
+      setError('confirmPassword', { type: 'manual', message: labels[currentLanguage].passwordMismatch });
       return;
     }
 
@@ -42,9 +79,9 @@ const Register = () => {
       } else {
         const bodyError = await response.text();
         if (bodyError === 'Email Already Exists') {
-          setError('email', { type: 'manual', message: 'Email already in use, please choose another one' });
+          setError('email', { type: 'manual', message: labels[currentLanguage].emailInUse });
         } else if (bodyError === 'Username Already Exists') {
-          setError('username', { type: 'manual', message: 'Username already in use, please choose another one' });
+          setError('username', { type: 'manual', message: labels[currentLanguage].usernameInUse });
         } else {
           console.error('Registration failed')
         }
@@ -73,21 +110,21 @@ const Register = () => {
           <PersonIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign Up
+          {labels[currentLanguage].signUp}
         </Typography>
         <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 1 }}>
         <Controller
             name="username"
             control={control}
             defaultValue=""
-            rules={{ required: 'Username cannot be empty, try again.' }}
+            rules={{ required: labels[currentLanguage].usernameError }}
             render={({ field }) => (
               <TextField
                 margin="normal"
                 required
                 fullWidth
-                label="Username"
-                placeholder='Username'
+                label={labels[currentLanguage].username}
+                placeholder={labels[currentLanguage].username}
                 autoFocus
                 {...field}
                 error={!!errors.username || !!errors.general}
@@ -100,10 +137,10 @@ const Register = () => {
             control={control}
             defaultValue=""
             rules={{
-              required: 'Email cannot be empty, try again.',
+              required: labels[currentLanguage].emailError,
               pattern: {
                 value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: 'Please input a valid email',
+                message: labels[currentLanguage].emailRegexError,
               },
             }}
             render={({ field }) => (
@@ -112,7 +149,7 @@ const Register = () => {
                 required
                 placeholder='Example@gmail.com'
                 fullWidth
-                label="Email"
+                label={labels[currentLanguage].email}
                 {...field}
                 error={!!errors.email || !!errors.general}
                 helperText={errors.email ? errors.email.message : ''}
@@ -123,15 +160,15 @@ const Register = () => {
             name="password"
             control={control}
             defaultValue=""
-            rules={{ required: 'Please input a password' }}
+            rules={{ required: labels[currentLanguage].passwordError }}
             render={({ field }) => (
               <TextField
                 margin="normal"
                 required
-                placeholder='Password'
+                placeholder={labels[currentLanguage].password}
                 fullWidth
                 type="password"
-                label="Password"
+                label={labels[currentLanguage].password}
                 {...field}
                 error={!!errors.password || !!errors.general}
                 helperText={errors.password ? errors.password.message : ''}
@@ -142,15 +179,15 @@ const Register = () => {
             name="confirmPassword"
             control={control}
             defaultValue=""
-            rules={{ required: 'Please confirm your password' }}
+            rules={{ required: labels[currentLanguage].confirmPasswordError}}
             render={({ field }) => (
               <TextField
                 margin="normal"
                 required
                 fullWidth
                 type="password"
-                placeholder='Password'
-                label="Confirm Password"
+                placeholder={labels[currentLanguage].password}
+                label={labels[currentLanguage].confirmPassword}
                 {...field}
                 error={!!errors.confirmPassword || !!errors.general}
                 helperText={errors.confirmPassword ? errors.confirmPassword.message : ''}
@@ -168,14 +205,14 @@ const Register = () => {
             variant="contained"
             sx={{ mt: 3, mb: 2 , bgcolor: 'primary.main'}}
           >
-            Sign Up
+            {labels[currentLanguage].signUp}
           </Button>
           <Grid container>
               <Grid item xs>
               </Grid>
               <Grid item>
                 <Link component={RouterLink} to="/login" variant="body2">
-                  {"I already have an account"}
+                  {labels[currentLanguage].alreadyHaveAnAccount}
                 </Link>
               </Grid>
             </Grid>

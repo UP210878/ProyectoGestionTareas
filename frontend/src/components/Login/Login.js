@@ -3,7 +3,7 @@ import './Login.css';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import PersonIcon from '@mui/icons-material/Person';
 import LoginIcon from '@mui/icons-material/Login';
-import { AuthContext, ModeContext } from '../Common';
+import { AuthContext, ModeContext, LanguageContext } from '../Common';
 import { Paper, Container, Typography, Box, Grid, Link, TextField, CssBaseline, Button, Avatar, createTheme, ThemeProvider} from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 
@@ -12,6 +12,7 @@ const Login = () => {
   const { isDarkMode } = useContext(ModeContext);
   const navigate = useNavigate();
   const { setIsAuthenticated } = useContext(AuthContext);
+  const { currentLanguage } = useContext(LanguageContext);
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -20,6 +21,27 @@ const Login = () => {
       mode: isDarkMode ? 'dark' : 'light',
     },
   });
+
+  const labels = {
+    en : {
+      signIn: 'Sign In',
+      email: 'Email',
+      password: 'Password',
+      emailError: 'Please input an email',
+      passwordError: 'Please input a password',
+      emailRegexError: 'Invalid email',
+      dontHaveAccount: 'I don\'t have an account',
+    },
+    es : {
+      signIn: 'Iniciar Sesión',
+      email: 'Correo electrónico',
+      password: 'Constraseña',
+      emailError: 'Porfavor ingrese un correo electrónico',
+      passwordError: 'Porfavor ingrese una constraseña',
+      emailRegexError: 'Correo electrónico invalido',
+      dontHaveAccount: 'No tengo cuenta',
+    },
+  };
 
   const onSubmit = async (data) => {
     const { email, password } = data;
@@ -66,7 +88,7 @@ const Login = () => {
               <PersonIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Sign In
+              {labels[currentLanguage].signIn}
             </Typography>
             <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 1 }}>
               <Controller
@@ -74,10 +96,10 @@ const Login = () => {
                 control={control}
                 defaultValue=""
                 rules={{
-                  required: 'Email cannot be empty, try again.',
+                  required: labels[currentLanguage].emailError,
                   pattern: {
                     value: emailRegex,
-                    message: 'Please input a valid email.',
+                    message: labels[currentLanguage].emailRegexError,
                   },
                 }}
                 render={({ field }) => (
@@ -85,7 +107,7 @@ const Login = () => {
                     margin="normal"
                     required
                     fullWidth
-                    label="Email"
+                    label={labels[currentLanguage].email}
                     autoFocus
                     {...field}
                     onChange={(event)=> {
@@ -101,14 +123,14 @@ const Login = () => {
                 name="password"
                 control={control}
                 defaultValue=""
-                rules={{ required: 'Please input a password' }}
+                rules={{ required: labels[currentLanguage].passwordError }}
                 render={({ field }) => (
                   <TextField
                     margin="normal"
                     required
                     fullWidth
                     type="password"
-                    label="Password"
+                    label={labels[currentLanguage].password}
                     {...field}
                     onChange={(event)=> {
                       field.onChange(event);
@@ -130,7 +152,7 @@ const Login = () => {
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
-                Sign In
+                {labels[currentLanguage].signIn}
                 <LoginIcon sx={{ mx: 1 }} />
               </Button>
               <Grid container>
@@ -138,7 +160,7 @@ const Login = () => {
                 </Grid>
                 <Grid item>
                   <Link component={RouterLink} to="/register" variant="body2">
-                    {"Don't have an account? Sign Up"}
+                    {labels[currentLanguage].dontHaveAccount}
                   </Link>
                 </Grid>
               </Grid>
