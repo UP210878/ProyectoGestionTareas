@@ -8,7 +8,7 @@ import { Paper, Container, Typography, Box, Grid, Link, TextField, CssBaseline, 
 import { useForm, Controller } from 'react-hook-form';
 
 const Login = () => {
-  const { handleSubmit, control, setError, formState: { errors } } = useForm();
+  const { handleSubmit, control, setError, clearErrors, formState: { errors } } = useForm();
   const { isDarkMode } = useContext(ModeContext);
   const navigate = useNavigate();
   const { setIsAuthenticated } = useContext(AuthContext);
@@ -88,6 +88,10 @@ const Login = () => {
                     label="Email"
                     autoFocus
                     {...field}
+                    onChange={(event)=> {
+                      field.onChange(event);
+                      clearErrors('general');
+                    }}
                     error={!!errors.email || !!errors.general}
                     helperText={errors.email ? errors.email.message : ''}
                   />
@@ -106,6 +110,10 @@ const Login = () => {
                     type="password"
                     label="Password"
                     {...field}
+                    onChange={(event)=> {
+                      field.onChange(event);
+                      clearErrors('general');
+                    }}
                     error={!!errors.password || !!errors.general}
                     helperText={errors.password ? errors.password.message : ''}
                   />
