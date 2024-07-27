@@ -1,5 +1,7 @@
 package com.example.p02.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -28,11 +30,11 @@ public class Activity {
     @Column(name = "completed")
     private Boolean completed;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "taskId", nullable = false)
     private Task task;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "assignedUser", nullable = false)
-    private User assignedUser;
+    @Column(name = "assignedUser")
+    private Integer assignedUser;
 }

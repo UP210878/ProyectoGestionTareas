@@ -7,7 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.p02.model.Category;
-import com.example.p02.repository.CategoryRepository;;
+import com.example.p02.repository.CategoryRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CategoryService {
@@ -20,11 +21,16 @@ public class CategoryService {
     public List<Category> getCategory(){
         return categoryRepository.findAll();
     }    
-    public void  eliminar (long id){
+    public void  eliminar (Long id){
         categoryRepository.deleteById(id);
     }
     public void guardar(Category category) {
         categoryRepository.save(category);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Category> getCatByUserId(Long id){
+        return categoryRepository.findCatByUserId(id);
     }
 
 
