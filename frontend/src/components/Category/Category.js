@@ -23,9 +23,7 @@ const Category = () => {
           },
           body: JSON.stringify({ token })
         });
-        console.log("token sent", token)
         const textResponse = await response.text();
-        console.log(response);
         if (response.ok) {
           const jsonResponse = JSON.parse(textResponse);
           setUserId(jsonResponse.userId);

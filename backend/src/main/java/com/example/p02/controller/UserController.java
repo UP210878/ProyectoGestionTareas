@@ -112,15 +112,12 @@ public class UserController {
   @PostMapping("/validateToken")
   public ResponseEntity<Map<String, Long>> validateToken(@RequestBody Map<String, String> tokenMap) {
       String token = tokenMap.get("token");
-      System.out.println("Received token: " + token);
       try {
           Long userId = JwtUtil.validateToken(token);
-          System.out.println("Validated userId: " + userId);
           Map<String, Long> response = new HashMap<>();
           response.put("userId", userId);
           return ResponseEntity.ok(response);
       } catch (Exception e) {
-          e.printStackTrace();
           return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
       }
   }
