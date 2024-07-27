@@ -34,7 +34,8 @@ const Login = () => {
       });
 
       if (response.ok) {
-        const token = await response.json();
+        const fullresponse = await response.json();
+        const token = fullresponse.token;
         sessionStorage.setItem('token', token);
         setIsAuthenticated(true);
         navigate('/home');

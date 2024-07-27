@@ -1,26 +1,23 @@
 import React from 'react';
-import './Task.css';
+import { Card, CardContent, Typography, Checkbox, FormControlLabel, Button } from '@mui/material';
+import Activity from '../Activity';
 
-class Task extends React.Component {
-  render() {
-    return (
-      <div className="task">
-        <h3>Task Title</h3>
-        <div className="activity">
-          <input type="checkbox" id="activity1" />
-          <label htmlFor="activity1">Activity 1</label>
-        </div>
-        <div className="activity">
-          <input type="checkbox" id="activity2" />
-          <label htmlFor="activity2">Activity 2</label>
-        </div>
-        <button className="edit-btn">Edit</button>
-        <div className="complete-toggle">
-          <label>Complete</label>
-          <input type="checkbox" />
-        </div>
-      </div>
-    );
-  }
-}
+const Task = ({ task }) => {
+  return (
+    <Card style={{ marginTop: '10px' }}>
+      <CardContent>
+        <Typography variant="h6">{task.taskName}</Typography>
+        {task.activities.map(activity => (
+          <Activity key={activity.activityId} activity={activity} />
+        ))}
+        <FormControlLabel 
+          control={<Checkbox checked={task.completed} />} 
+          label="Complete" 
+        />
+        <Button variant="outlined" onClick={() => { /* Add activity logic */ }}>Add Activity</Button>
+      </CardContent>
+    </Card>
+  );
+};
+
 export default Task;

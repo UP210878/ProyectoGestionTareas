@@ -1,10 +1,16 @@
 import React from 'react';
-import './Activity.css';
+import { FormControlLabel, Checkbox, Typography } from '@mui/material';
 
-const Activity = (props) => {
+const Activity = ({ activity }) => {
   return (
-    <div><p>Activity</p></div>
+    <div>
+      <Typography variant="body1">{activity.activityName}</Typography>
+      <FormControlLabel 
+        control={<Checkbox checked={activity.completed} />} 
+        label="Completed" 
+      />
+    </div>
   );
-}
+};
 
 export default Activity;
