@@ -14,12 +14,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "Task DTO model for saving tasks")
-public class TaskDTO {
+@Schema(description = "Activity DTO model for putting activities")
+public class ActivityDTO {
+    private Long taskId;
 
-    private String taskName;
+    private String activityName;
 
-    private Date dueDate;
+    private String assignedUser;
 
     private Boolean completed;
 }
