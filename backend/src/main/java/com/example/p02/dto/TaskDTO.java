@@ -16,10 +16,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @NoArgsConstructor
 @Schema(description = "Task DTO model for saving tasks")
 public class TaskDTO {
-
     private String taskName;
-
     private Date dueDate;
-
-    private Boolean completed;
 }

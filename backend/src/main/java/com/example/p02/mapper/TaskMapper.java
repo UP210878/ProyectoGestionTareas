@@ -14,6 +14,7 @@ public interface TaskMapper {
     @Mapping(target = "taskId", ignore = true)
     @Mapping(target = "category", ignore = true)
     @Mapping(target = "activities", ignore = true)
+    @Mapping(target = "completed", ignore = true)
     Task toTask(TaskDTO taskDTO);
 
     TaskDTO toTaskDTO(Task task);

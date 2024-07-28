@@ -35,6 +35,7 @@ public class TaskService {
         if (categoryOptional.isPresent()) {
             Category category = categoryOptional.get();
             task.setCategory(category);
+            task.setCompleted(false);
             taskRepository.save(task);
         } else {
             throw new ExceptionResourceNotFound("Category doesn't exist in which to save the task");
