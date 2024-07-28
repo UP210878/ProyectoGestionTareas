@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Button, TextField, Card, CardContent, Grid, Typography, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Box } from '@mui/material';
+import { Button, TextField, Card, CardContent, Grid, Typography, Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from '@mui/material';
 import {Delete,AddCircle} from '@mui/icons-material';
-import Task from '../Task';
+import { Task, TaskForm} from '../Task';
 
 const Category = () => {
   const [categories, setCategories] = useState([]);
@@ -153,7 +153,7 @@ const Category = () => {
             {category.tasks.map(task => (
               <Task key={task.taskId} task={task} />
             ))}
-            <Button variant="outlined" onClick={() => { /* Add task logic */ }}>Add Task</Button>
+            <TaskForm/>
           </CardContent>
         </Card>
       </Grid>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent, Typography, Checkbox, FormControlLabel, Button } from '@mui/material';
+import { Card, CardContent, Typography, Checkbox, FormControlLabel } from '@mui/material';
 import Activity from '../Activity';
 
 const Task = ({ task }) => {
@@ -14,7 +14,6 @@ const Task = ({ task }) => {
           control={<Checkbox checked={task.completed} />} 
           label="Complete" 
         />
-        <Button variant="outlined" onClick={() => { /* Add activity logic */ }}>Add Activity</Button>
       </CardContent>
     </Card>
   );

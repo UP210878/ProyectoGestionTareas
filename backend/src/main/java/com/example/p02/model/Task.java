@@ -10,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import java.util.Date;
 import lombok.Data;
@@ -30,8 +31,8 @@ public class Task {
     @Column(name = "taskId")
     private Long taskId;
 
-    @Column(name = "taskName", nullable = false, length = 30)
-    @NotEmpty
+    @Column(name = "taskName")
+    @NotBlank
     private String taskName;
 
     @Column(name = "dueDate")

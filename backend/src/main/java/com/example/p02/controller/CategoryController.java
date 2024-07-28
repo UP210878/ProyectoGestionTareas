@@ -8,19 +8,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.p02.dto.CategoryAddDTO;
 import com.example.p02.exception.ExceptionResourceNotFound;
 import com.example.p02.mapper.CategoryMapper;
-import com.example.p02.util.JwtUtil;
 import java.util.Optional;
 import java.util.List;
-import com.example.p02.exception.ExceptionResourceNotFound;
 import com.example.p02.model.Category;
 import com.example.p02.service.CategoryService;
 
@@ -54,11 +50,11 @@ public class CategoryController {
     }
 
     @DeleteMapping("/deleteCategory/{id}")
-    public ResponseEntity<Optional<Category>> deleteCategory(@PathVariable Long id) throws ExceptionResourceNotFound {
+    public ResponseEntity<String> deleteCategory(@PathVariable Long id) throws ExceptionResourceNotFound {
         Optional<Category> category = categoryService.getCategory(id);
         if (category.isPresent()) {
             categoryService.delCategory(id);
-            return ResponseEntity.status(200).body(category);
+            return ResponseEntity.status(200).body("Succesfully deleted category");
         } else {
             throw new ExceptionResourceNotFound("Category Id doesn't exist");
         }
