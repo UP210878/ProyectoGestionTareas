@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.example.p02.model.Category;
 import com.example.p02.repository.CategoryRepository;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.Optional;
 
 @Service
 public class CategoryService {
@@ -18,9 +19,13 @@ public class CategoryService {
     public CategoryService(CategoryRepository categoryRepository){
         this.categoryRepository = categoryRepository;
     }
-    public List<Category> getCategory(){
+    public List<Category> getAllCategories(){
         return categoryRepository.findAll();
-    }    
+    }
+    
+    public Optional<Category> getCategory(Long id){
+        return categoryRepository.findById(id);
+    }
     public void  delCategory(Long id){
         categoryRepository.deleteById(id);
     }

@@ -18,6 +18,7 @@ import jakarta.persistence.CascadeType;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import java.util.ArrayList;
 
 @Data
 @Entity
@@ -28,7 +29,7 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "categoryId")
     private Integer categoryId;
-    
+
     @NotNull
     @Column(name = "userId")
     private Long userId;
@@ -39,5 +40,5 @@ public class Category {
 
     @JsonManagedReference
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Task> tasks;
+    private List<Task> tasks = new ArrayList<>();
 }

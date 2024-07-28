@@ -52,4 +52,15 @@ public class CategoryController {
         categoryService.saveCategory(category, id);
         return ResponseEntity.status(200).body(category);
     }
+
+    @DeleteMapping("/deleteCategory/{id}")
+    public ResponseEntity<Optional<Category>> deleteCategory(@PathVariable Long id) throws ExceptionResourceNotFound {
+        Optional<Category> category = categoryService.getCategory(id);
+        if (category.isPresent()) {
+            categoryService.delCategory(id);
+            return ResponseEntity.status(200).body(category);
+        } else {
+            throw new ExceptionResourceNotFound("Category Id doesn't exist");
+        }
+    }
 };
