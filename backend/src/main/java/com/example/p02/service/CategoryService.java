@@ -21,10 +21,11 @@ public class CategoryService {
     public List<Category> getCategory(){
         return categoryRepository.findAll();
     }    
-    public void  eliminar (Long id){
+    public void  delCategory(Long id){
         categoryRepository.deleteById(id);
     }
-    public void guardar(Category category) {
+    public void saveCategory(Category category, Long id) {
+        category.setUserId(id);
         categoryRepository.save(category);
     }
 

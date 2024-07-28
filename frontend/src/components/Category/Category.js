@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Button, TextField, Card, CardContent, Grid } from '@mui/material';
+import { Button, TextField, Card, CardContent, Grid, Typography, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import Task from '../Task';
 
 const Category = () => {
   const [categories, setCategories] = useState([]);
   const [userId, setUserId] = useState(null);
+  const [newCategoryName, setCategoryName] = useState('');
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
     const token = sessionStorage.getItem('token');
@@ -58,28 +60,53 @@ const Category = () => {
     }
   }, [userId]);
 
-  const addCategory = () => {
-    const newCategory = { id: Date.now(), name: '', tasks: [] };
-    setCategories([...categories, newCategory]);
+  const addCategory = async () => {
+    const response = await fetch(`http://localhost:8080/api/category/postCategory/${userId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ categoryName: newCategoryName }), // Updated to send as an object
+    });
+
+    if (response.ok) {
+      console.log("success");
+      const newCategory = await response.json();
+      setCategories([...categories, newCategory]); // Update the categories state with the new category
+      setDialogOpen(false); 
+      setCategoryName('');
+    } else {
+      console.log("failure");
+    }
   };
 
-  const handleCategoryChange = (id, name) => {
-    setCategories(categories.map(cat => (cat.id === id ? { ...cat, name } : cat)));
+  const handleOpenDialog = () => {
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
+
+  const handleCategoryNameChange = (event) => {
+    setCategoryName(event.target.value);
+  };
+
+  const handleFormSubmit = (event) => {
+    event.preventDefault();
+    addCategory();
   };
 
   return (
     <div>
-      <Button onClick={addCategory} variant="contained" color="primary">Add Category</Button>
+      <Button onClick={handleOpenDialog} variant="contained" color="primary">Add Category</Button>
+
       <Grid container spacing={2}>
         {categories.map(category => (
           <Grid item key={category.categoryId}>
             <Card>
               <CardContent>
-                <TextField
-                  value={category.categoryName}
-                  onChange={(e) => handleCategoryChange(category.categoryId, e.target.value)}
-                  placeholder="Category Name"
-                />
+                <Typography>{category.categoryName}</Typography>
                 {category.tasks.map(task => (
                   <Task key={task.taskId} task={task} />
                 ))}
@@ -89,6 +116,27 @@ const Category = () => {
           </Grid>
         ))}
       </Grid>
+
+      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
+        <DialogTitle>Add New Category</DialogTitle>
+        <form onSubmit={handleFormSubmit}>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              label="Category Name"
+              type="text"
+              fullWidth
+              value={newCategoryName}
+              onChange={handleCategoryNameChange}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog} color="primary">Cancel</Button>
+            <Button type="submit" color="primary">Add</Button>
+          </DialogActions>
+        </form>
+      </Dialog>
     </div>
   );
 };

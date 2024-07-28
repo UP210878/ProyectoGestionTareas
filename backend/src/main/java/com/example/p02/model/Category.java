@@ -10,7 +10,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import jakarta.persistence.CascadeType;
 import java.util.List;
@@ -26,16 +28,12 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "categoryId")
     private Integer categoryId;
-
-    // @ManyToOne(fetch = FetchType.EAGER)
-    // @JoinColumn(name = "userId", nullable = false)
-    // private User user;
-
-    @NotEmpty
+    
+    @NotNull
     @Column(name = "userId")
     private Long userId;
 
-    @NotEmpty
+    @NotBlank
     @Column(name = "categoryName", nullable = false, length = 30)
     private String categoryName;
 

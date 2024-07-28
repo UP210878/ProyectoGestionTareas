@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import com.example.p02.exception.ExceptionResourceNotFound;
 
+import com.example.p02.dto.CategoryAddDTO;
+import com.example.p02.exception.ExceptionResourceNotFound;
+import com.example.p02.mapper.CategoryMapper;
 import com.example.p02.util.JwtUtil;
 import java.util.Optional;
 import java.util.List;
@@ -27,9 +29,11 @@ import com.example.p02.service.CategoryService;
 @RequestMapping("/api/category")
 public class CategoryController {
     private final CategoryService categoryService;
+    private final CategoryMapper categoryMapper;
 
-    public CategoryController(@Autowired CategoryService categoryService) {
+    public CategoryController(@Autowired CategoryService categoryService, CategoryMapper categoryMapper) {
         this.categoryService = categoryService;
+        this.categoryMapper = categoryMapper;
     }
 
     @GetMapping({"/getCategoryByUserId/{id}"})
@@ -40,5 +44,12 @@ public class CategoryController {
         } else {
             throw new ExceptionResourceNotFound("Categories asociated with user " + id  + " not found within the database.");
         }
+    }
+
+    @PostMapping("/postCategory/{id}")
+    public ResponseEntity<Category> postCategory(@RequestBody CategoryAddDTO categoryDTO, @PathVariable Long id) {
+        Category category = categoryMapper.toCategory(categoryDTO);
+        categoryService.saveCategory(category, id);
+        return ResponseEntity.status(200).body(category);
     }
 };
