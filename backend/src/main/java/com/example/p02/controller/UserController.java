@@ -87,6 +87,17 @@ public class UserController {
     }
   };
 
+  @GetMapping({"/getUsername/{id}"})
+  public ResponseEntity<String> getUsername(@PathVariable Long id) throws ExceptionResourceNotFound {
+    Optional<User> userOptional = userService.getUser(id);
+    if (userOptional.isPresent()) {
+      User user = userOptional.get();
+      return ResponseEntity.ok(user.getUsername());
+    } else {
+      throw new ExceptionResourceNotFound("User not found");
+    }
+  }
+
   @DeleteMapping("/delUser/{id}")
   public ResponseEntity<String> delUser(@PathVariable Long id) throws ExceptionResourceNotFound {
     Optional<User> userToDelete = userService.getUser(id);

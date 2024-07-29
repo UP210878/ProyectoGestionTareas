@@ -36,7 +36,7 @@ const Task = ({ task, setCategories, categories, categoryId }) => {
         ))}
         <FormControlLabel 
           control={<Checkbox checked={task.completed} />} 
-          label="Complete" 
+          label="Task Complete" 
         />
       </CardContent>
     </Card>
