@@ -1,5 +1,5 @@
 import {React,useState,useEffect} from 'react';
-import { FormControlLabel, Checkbox, Typography } from '@mui/material';
+import { FormControlLabel, Checkbox, Typography, Paper } from '@mui/material';
 
 
 const getUsername = async (assignedUser) => {
@@ -32,14 +32,14 @@ const Activity = ({ activity }) => {
 }, [activity.assignedUser]);
 
   return (
-    <div>
+    <Paper elevation={5} sx={{margin:1, padding:1}}>
       <Typography variant="body1">{activity.activityName}</Typography>
       <Typography variant="body2">{username}</Typography>
       <FormControlLabel 
         control={<Checkbox checked={activity.completed} />} 
         label="Completed" 
-      />
-    </div>
+        />
+    </Paper>
   );
 };
 

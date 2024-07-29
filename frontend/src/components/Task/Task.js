@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent, Typography, Checkbox, FormControlLabel, Grid } from '@mui/material';
+import { Card, CardContent, Typography, Checkbox, FormControlLabel, Grid, Paper } from '@mui/material';
 import Activity from '../Activity';
 import DeleteTaskForm from './DeleteTask';
 
@@ -15,7 +15,9 @@ const Task = ({ task, setCategories, categories, categoryId }) => {
   const formattedDueDate = task.dueDate ? "Due Date: " + formatDueDate(task.dueDate) : 'No due date';
 
   return (
+    <Paper elevation={4}>
     <Card style={{ marginTop: '10px' }}>
+    <Paper elevation={3}>
       <CardContent>
         <Grid container>
           <Grid item xs>
@@ -28,7 +30,7 @@ const Task = ({ task, setCategories, categories, categoryId }) => {
               setCategories={setCategories}
               categories={categories}
               categoryId={categoryId}
-            />
+              />
           </Grid>
         </Grid>
         {task.activities.map(activity => (
@@ -37,9 +39,11 @@ const Task = ({ task, setCategories, categories, categoryId }) => {
         <FormControlLabel 
           control={<Checkbox checked={task.completed} />} 
           label="Task Complete" 
-        />
+          />
       </CardContent>
+      </Paper>
     </Card>
+    </Paper>
   );
 };
 

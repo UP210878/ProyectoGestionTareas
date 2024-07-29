@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Button, TextField, Card, CardContent, Grid, Typography, Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from '@mui/material';
+import React, { useState, useEffect, useContext } from 'react';
+import { Button, TextField, Card, CardContent, Grid, Typography, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, createTheme, ThemeProvider, CssBaseline, Paper } from '@mui/material';
+import { ModeContext } from '../Common';
 import {Delete,AddCircle} from '@mui/icons-material';
 import { Task, TaskForm} from '../Task';
 
@@ -11,6 +12,13 @@ const Category = () => {
   const [deletePrompt, setdeletePrompt] =useState(false);
   const [categoryId, setCategoryId] = useState(null);
   const [categoryNameToDelete,setCategoryNameToDelete] =useState('');
+  const { isDarkMode } = useContext(ModeContext);
+
+  const currentTheme = createTheme({
+    palette: {
+      mode: isDarkMode ? 'dark' : 'light',
+    },
+  });
 
   useEffect(() => {
     const token = sessionStorage.getItem('token');
@@ -134,13 +142,14 @@ const Category = () => {
   };
 
   return (
-    <div>
-  <Grid container spacing={3} margin={1}>
+  <ThemeProvider theme={currentTheme}>
+  <CssBaseline/>
+  <Grid container spacing={3} sx={{ margin: '0 auto', width: '100%', overflowX: 'hidden' }}>
     {categories.map(category => (
-      <Grid item key={category.categoryId}>
+      <Grid item key={category.categoryId} xs={12} sm={6} md={3}>
         <Card>
           <CardContent>
-            <Grid container alignItems="center" spacing={2}>
+            <Grid container alignItems="center" spacing={6}>
               <Grid item xs>
                 <Typography variant='h5'>{category.categoryName}</Typography>
               </Grid>
@@ -152,11 +161,13 @@ const Category = () => {
             </Grid>
             {category.tasks.map(task => (
               <Task key={task.taskId} task={task} setCategories={setCategories} categories={categories} categoryId={category.categoryId} />
-            ))}
+            ))}  
+            <Grid item xs display="flex" justifyContent="center" marginTop={2}>
             <TaskForm
             categoryId={category.categoryId}
             setCategories={setCategories}
             categories={categories}/>
+            </Grid>
           </CardContent>
         </Card>
       </Grid>
@@ -197,8 +208,7 @@ const Category = () => {
           </DialogActions>
         </form>
       </Dialog>
-
-    </div>
+    </ThemeProvider>
   );
 };
 
