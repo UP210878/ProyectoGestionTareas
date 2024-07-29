@@ -87,6 +87,10 @@ public class UserController {
     }
   }
 
+  @GetMapping ({ "/getUsernames"})
+  public ResponseEntity<List<String>> getUsernames(){
+    return ResponseEntity.ok(userService.getUsernames());
+  }
 
   @GetMapping({"/getUsername/{id}"})
   public ResponseEntity<String> getUsername(@PathVariable Long id) throws ExceptionResourceNotFound {

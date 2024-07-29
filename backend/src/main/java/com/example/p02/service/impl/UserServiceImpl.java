@@ -52,6 +52,10 @@ public class UserServiceImpl implements UserService{
         return userRepository.findIdByUsername(username);
     }
 
+    public List<String> getUsernames() {
+        return userRepository.findUsernames();
+    }
+
     public boolean checkPasswd(User user, String rawPassword){
         return bCryptPasswordEncoder.matches(rawPassword, user.getPassword());
     }
