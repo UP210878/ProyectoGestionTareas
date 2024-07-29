@@ -7,6 +7,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Typography } from '@mui/material';
+import { AddActivity } from '../Activity';
 
 const TaskForm = ({categoryId,setCategories,categories}) => {
   const [open, setOpen] = useState(false);
@@ -87,7 +88,7 @@ const TaskForm = ({categoryId,setCategories,categories}) => {
             onChange={handleTaskNameChange}
           />
           <Typography marginTop={2}>Activities</Typography>
-        <Button variant="outlined" onClick={() => { /* Add activity logic */ }}>Add Activity</Button>
+            <AddActivity/>
         <Typography>Due date</Typography>
         <TextField
             margin="dense"

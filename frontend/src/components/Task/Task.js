@@ -1,6 +1,5 @@
 import React from 'react';
 import { Card, CardContent, Typography, Checkbox, FormControlLabel, Grid } from '@mui/material';
-import { DeleteOutline } from '@mui/icons-material';
 import Activity from '../Activity';
 import DeleteTaskForm from './DeleteTask';
 
