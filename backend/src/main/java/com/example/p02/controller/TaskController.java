@@ -40,7 +40,7 @@ public class TaskController {
     }
 
     @DeleteMapping("/deleteTask/{id}")
-    public ResponseEntity<String> deleteCategory(@PathVariable Long id) throws ExceptionResourceNotFound {
+    public ResponseEntity<String> deleteTask(@PathVariable Long id) throws ExceptionResourceNotFound {
         Optional<Task> task = taskService.getTaskById(id);
         if (task.isPresent()) {
             taskService.deleteTask(id);

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Button, TextField, Card, CardContent, Grid, Typography, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, createTheme, ThemeProvider, CssBaseline, Paper } from '@mui/material';
 import { ModeContext } from '../Common';
-import {Delete,AddCircle} from '@mui/icons-material';
+import {Delete,AddCircle,Edit} from '@mui/icons-material';
 import { Task, TaskForm} from '../Task';
 
 const Category = () => {
@@ -19,6 +19,8 @@ const Category = () => {
       mode: isDarkMode ? 'dark' : 'light',
     },
   });
+
+  const theme = currentTheme;
 
   useEffect(() => {
     const token = sessionStorage.getItem('token');
@@ -157,8 +159,13 @@ const Category = () => {
                 <IconButton onClick={() => openDeletePrompt(category.categoryId, category.categoryName)} color="error">
                   <Delete />
                 </IconButton>
+                <IconButton color="info">
+                  <Edit />
+                </IconButton>
               </Grid>
             </Grid>
+            </CardContent>
+          </Card>
             {category.tasks.map(task => (
               <Task key={task.taskId} task={task} setCategories={setCategories} categories={categories} categoryId={category.categoryId} />
             ))}  
@@ -168,8 +175,6 @@ const Category = () => {
             setCategories={setCategories}
             categories={categories}/>
             </Grid>
-          </CardContent>
-        </Card>
       </Grid>
     ))}
     <Grid item margin={2}>

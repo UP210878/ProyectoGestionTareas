@@ -85,7 +85,8 @@ public class UserController {
     } else {
       throw new ExceptionResourceNotFound("User " + id  + " not found within the database.");
     }
-  };
+  }
+
 
   @GetMapping({"/getUsername/{id}"})
   public ResponseEntity<String> getUsername(@PathVariable Long id) throws ExceptionResourceNotFound {
@@ -95,6 +96,16 @@ public class UserController {
       return ResponseEntity.ok(user.getUsername());
     } else {
       throw new ExceptionResourceNotFound("User not found");
+    }
+  }
+
+  @GetMapping({"/getUserIdByUsername/{username}"})
+  public ResponseEntity<Long> getUserIdByUsername(@PathVariable String username) throws ExceptionResourceNotFound{
+    Long userId = userService.findIdByUsername(username);
+    if (userId!=null) {
+      return ResponseEntity.ok(userService.findIdByUsername(username));
+    } else {
+      throw new ExceptionResourceNotFound("Username doesn't exist");
     }
   }
 
