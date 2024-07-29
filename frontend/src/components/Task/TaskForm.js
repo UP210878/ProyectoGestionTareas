@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -7,14 +7,14 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Typography } from '@mui/material';
-import { AddActivity } from '../Activity';
 
-const TaskForm = ({categoryId,setCategories,categories}) => {
+const TaskForm = ({ categoryId, setCategories, categories }) => {
   const [open, setOpen] = useState(false);
   const [taskName, setTaskName] = useState('');
-  const [dueDate,setDueDate] = useState('');
+  const [dueDate, setDueDate] = useState('');
+  const [activities, setActivities] = useState([]);
 
-  const handleTaskFormSubmit = (event) => {
+  const handleTaskFormSubmit = async (event) => {
     event.preventDefault();
     addTask();
   };
@@ -25,23 +25,25 @@ const TaskForm = ({categoryId,setCategories,categories}) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ taskName,dueDate }),
+      body: JSON.stringify({ taskName, dueDate, activities }),
     });
 
     if (response.ok) {
+      console.log(JSON.stringify({ taskName, dueDate, activities }));
       const newTask = await response.json();
-      console.log("success");
       setCategories(categories.map(category => 
         category.categoryId === categoryId 
         ? { ...category, tasks: [...category.tasks, newTask] } 
         : category
       ));
-      setOpen(false); 
+      setOpen(false);
+      setTaskName('');
+      setDueDate('');
+      setActivities([]);
     } else {
-      console.log("Failed to created Task");
+      console.log("Failed to create Task");
     }
   };
-
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -53,10 +55,21 @@ const TaskForm = ({categoryId,setCategories,categories}) => {
 
   const handleTaskNameChange = (e) => {
     setTaskName(e.target.value);
-  }
+  };
 
   const handleDueDateChange = (e) => {
     setDueDate(e.target.value);
+  };
+
+  const addActivityField = () => {
+    setActivities([...activities, { activityName: '' }]);
+  };
+  
+  const handleActivityChange = (index, value) => {
+    const newActivities = activities.map((activity, i) => 
+      i === index ? { ...activity, activityName: value } : activity
+    );
+    setActivities(newActivities);
   };
 
   return (
@@ -70,41 +83,51 @@ const TaskForm = ({categoryId,setCategories,categories}) => {
       >
         <DialogTitle>Add Task</DialogTitle>
         <form onSubmit={handleTaskFormSubmit}>
-        <DialogContent>
-          <DialogContentText>
-            Add a task and all its activities using this form.
-          </DialogContentText>
-          <Typography marginTop={2}>Task Name</Typography>
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="taskName"
-            name="taskName"
-            label="Task Name"
-            fullWidth
-            variant="standard"
-            value={taskName}
-            onChange={handleTaskNameChange}
-          />
-          <Typography marginTop={2}>Activities</Typography>
-            <AddActivity/>
-        <Typography>Due date</Typography>
-        <TextField
-            margin="dense"
-            id="dueDate"
-            name="dueDate"
-            fullWidth
-            variant="standard"
-            value={dueDate}
-            onChange={handleDueDateChange}
-            type='date'
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color='error'>Cancel</Button>
-          <Button type="submit">Add Task</Button>
-        </DialogActions>
+          <DialogContent>
+            <DialogContentText>
+              Add a task and all its activities using this form.
+            </DialogContentText>
+            <Typography marginTop={2}>Task Name</Typography>
+            <TextField
+              autoFocus
+              required
+              margin="dense"
+              id="taskName"
+              name="taskName"
+              label="Task Name"
+              fullWidth
+              variant="standard"
+              value={taskName}
+              onChange={handleTaskNameChange}
+            />
+            <Typography marginTop={2}>Activities</Typography>
+            {activities.map((activity, index) => (
+              <TextField
+                key={index}
+                margin="dense"
+                label={`Activity ${index + 1}`}
+                fullWidth
+                variant="standard"
+                onChange={(e) => handleActivityChange(index, e.target.value)}
+              />
+            ))}
+            <Button variant="outlined" onClick={addActivityField}>Add Activity</Button>
+            <Typography>Due date</Typography>
+            <TextField
+              margin="dense"
+              id="dueDate"
+              name="dueDate"
+              fullWidth
+              variant="standard"
+              value={dueDate}
+              onChange={handleDueDateChange}
+              type='date'
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} color='error'>Cancel</Button>
+            <Button type="submit">Add Task</Button>
+          </DialogActions>
         </form>
       </Dialog>
     </React.Fragment>

@@ -16,8 +16,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @NoArgsConstructor
 @Schema(description = "Activity DTO model for putting activities")
 public class ActivityDTO {
-    private Long taskId;
-
     private String activityName;
 
     private String assignedUser;
