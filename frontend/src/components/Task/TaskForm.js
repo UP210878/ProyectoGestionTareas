@@ -6,7 +6,8 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { Typography } from '@mui/material';
+import { Grid, IconButton, Typography } from '@mui/material';
+import { Delete } from "@mui/icons-material";
 
 const TaskForm = ({ categoryId, setCategories, categories }) => {
   const [open, setOpen] = useState(false);
@@ -29,7 +30,6 @@ const TaskForm = ({ categoryId, setCategories, categories }) => {
     });
 
     if (response.ok) {
-      console.log(JSON.stringify({ taskName, dueDate, activities }));
       const newTask = await response.json();
       setCategories(categories.map(category => 
         category.categoryId === categoryId 
@@ -72,6 +72,10 @@ const TaskForm = ({ categoryId, setCategories, categories }) => {
     setActivities(newActivities);
   };
 
+  const handleDeleteActivity = (index) => {
+    setActivities(activities.filter((_, i) => i !== index));
+  };
+
   return (
     <React.Fragment>
       <Button variant="outlined" onClick={handleClickOpen}>
@@ -102,14 +106,26 @@ const TaskForm = ({ categoryId, setCategories, categories }) => {
             />
             <Typography marginTop={2}>Activities</Typography>
             {activities.map((activity, index) => (
-              <TextField
-                key={index}
-                margin="dense"
-                label={`Activity ${index + 1}`}
-                fullWidth
-                variant="standard"
-                onChange={(e) => handleActivityChange(index, e.target.value)}
-              />
+              <Grid container key={index} spacing={1} alignItems="center">
+                <Grid item xs>
+                  <TextField
+                    margin="dense"
+                    label={`Activity ${index + 1}`}
+                    fullWidth
+                    variant="standard"
+                    value={activity.activityName}
+                    onChange={(e) => handleActivityChange(index, e.target.value)}
+                  />
+                </Grid>
+                <Grid item>
+                  <IconButton
+                    color='error'
+                    onClick={() => handleDeleteActivity(index)}
+                  >
+                    <Delete />
+                  </IconButton>
+                </Grid>
+              </Grid>
             ))}
             <Button variant="outlined" onClick={addActivityField}>Add Activity</Button>
             <Typography>Due date</Typography>
