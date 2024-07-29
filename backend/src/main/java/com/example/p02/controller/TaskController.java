@@ -36,10 +36,10 @@ public class TaskController {
     }
 
     @PostMapping("/postTask/{id}")
-    public ResponseEntity<String> postTask(@RequestBody TaskDTO taskDTO, @RequestParam Long id) throws ExceptionResourceNotFound{
+    public ResponseEntity<Task> postTask(@RequestBody TaskDTO taskDTO, @PathVariable Long id) throws ExceptionResourceNotFound{
         Task task = taskMapper.toTask(taskDTO);
         taskService.saveTask(task, id);
-        return ResponseEntity.ok("Task posted succesfully");
+        return ResponseEntity.ok(task);
     }
 
     @DeleteMapping("/deleteTask/{id}")

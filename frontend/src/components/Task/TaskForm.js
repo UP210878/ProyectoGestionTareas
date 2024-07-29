@@ -8,8 +8,39 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Typography } from '@mui/material';
 
-const TaskForm = () => {
+const TaskForm = ({categoryId,setCategories,categories}) => {
   const [open, setOpen] = useState(false);
+  const [taskName, setTaskName] = useState('');
+  const [dueDate,setDueDate] = useState('');
+
+  const handleTaskFormSubmit = (event) => {
+    event.preventDefault();
+    addTask();
+  };
+
+  const addTask = async () => {
+    const response = await fetch(`http://localhost:8080/api/tasks/postTask/${categoryId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ taskName,dueDate }),
+    });
+
+    if (response.ok) {
+      const newTask = await response.json();
+      console.log("success");
+      setCategories(categories.map(category => 
+        category.categoryId === categoryId 
+        ? { ...category, tasks: [...category.tasks, newTask] } 
+        : category
+      ));
+      setOpen(false); 
+    } else {
+      console.log("Failed to created Task");
+    }
+  };
+
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -17,6 +48,14 @@ const TaskForm = () => {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleTaskNameChange = (e) => {
+    setTaskName(e.target.value);
+  }
+
+  const handleDueDateChange = (e) => {
+    setDueDate(e.target.value);
   };
 
   return (
@@ -29,6 +68,7 @@ const TaskForm = () => {
         onClose={handleClose}
       >
         <DialogTitle>Add Task</DialogTitle>
+        <form onSubmit={handleTaskFormSubmit}>
         <DialogContent>
           <DialogContentText>
             Add a task and all its activities using this form.
@@ -43,26 +83,10 @@ const TaskForm = () => {
             label="Task Name"
             fullWidth
             variant="standard"
+            value={taskName}
+            onChange={handleTaskNameChange}
           />
           <Typography marginTop={2}>Activities</Typography>
-          <TextField
-            required
-            margin="dense"
-            id="activityName"
-            name="activityName"
-            label="Activity"
-            fullWidth
-            variant="standard"
-          />
-          <TextField
-            margin="dense"
-            id="assignedUser"
-            name="assignedUser"
-            label="Assigned User"
-            fullWidth
-            variant="standard"
-          />
-          
         <Button variant="outlined" onClick={() => { /* Add activity logic */ }}>Add Activity</Button>
         <Typography>Due date</Typography>
         <TextField
@@ -72,6 +96,8 @@ const TaskForm = () => {
             name="dueDate"
             fullWidth
             variant="standard"
+            value={dueDate}
+            onChange={handleDueDateChange}
             type='date'
           />
         </DialogContent>
@@ -79,6 +105,7 @@ const TaskForm = () => {
           <Button onClick={handleClose} color='error'>Cancel</Button>
           <Button type="submit">Add Task</Button>
         </DialogActions>
+        </form>
       </Dialog>
     </React.Fragment>
   );

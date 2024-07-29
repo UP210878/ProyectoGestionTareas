@@ -151,9 +151,12 @@ const Category = () => {
               </Grid>
             </Grid>
             {category.tasks.map(task => (
-              <Task key={task.taskId} task={task} />
+              <Task key={task.taskId} task={task} setCategories={setCategories} categories={categories} categoryId={category.categoryId} />
             ))}
-            <TaskForm/>
+            <TaskForm
+            categoryId={category.categoryId}
+            setCategories={setCategories}
+            categories={categories}/>
           </CardContent>
         </Card>
       </Grid>
@@ -190,7 +193,7 @@ const Category = () => {
         <form onSubmit={deleteCategorySubmit}>
           <DialogActions>
             <Button onClick={closeDeletePrompt} color="error">Cancel</Button>
-            <Button type="submit" color="secondary">Delete Category</Button>
+            <Button type="submit" color="primary">Delete Category</Button>
           </DialogActions>
         </form>
       </Dialog>
