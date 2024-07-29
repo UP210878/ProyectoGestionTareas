@@ -90,7 +90,6 @@ const TaskForm = ({categoryId,setCategories,categories}) => {
         <Button variant="outlined" onClick={() => { /* Add activity logic */ }}>Add Activity</Button>
         <Typography>Due date</Typography>
         <TextField
-            required
             margin="dense"
             id="dueDate"
             name="dueDate"
