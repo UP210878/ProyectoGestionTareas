@@ -1,6 +1,8 @@
 package com.example.p02.service;
 
 import java.util.Optional;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,13 +56,54 @@ public class TaskService {
         }
     }
 
-    public void updateTask(Task newTaskData, Long taskId){
-        Optional<Task> taskOptional = taskRepository.findById(taskId);
+public void updateTask(Task newTaskData, Long taskId) throws ExceptionResourceNotFound {
+    Optional<Task> taskOptional = taskRepository.findById(taskId);
+    if (taskOptional.isPresent()) {
         Task taskToUpdate = taskOptional.get();
-        taskToUpdate.setActivities(newTaskData.getActivities());
         taskToUpdate.setTaskName(newTaskData.getTaskName());
         taskToUpdate.setDueDate(newTaskData.getDueDate());
+
+        // Para Actividades
+        if (newTaskData.getActivities() != null) {
+            // Ver las actividades existentes
+            Map<Long, Activity> existingActivities = taskToUpdate.getActivities().stream()
+                    .collect(Collectors.toMap(Activity::getActivityId, activity -> activity));
+
+            // Actualizar/Crear Actividades
+            for (Activity newActivity : newTaskData.getActivities()) {
+                if (newActivity.getActivityId() == null) {
+                    // Actividad Nueva
+                    newActivity.setTask(taskToUpdate);
+                    newActivity.setCompleted(false);
+                    taskToUpdate.getActivities().add(newActivity);
+                } else {
+                    // Actividad Existente
+                    Activity existingActivity = existingActivities.get(newActivity.getActivityId());
+                    if (existingActivity != null) {
+                        existingActivity.setActivityName(newActivity.getActivityName());
+                        existingActivity.setCompleted(newActivity.getCompleted());
+                        existingActivities.remove(newActivity.getActivityId());
+                    } else {
+                        newActivity.setTask(taskToUpdate);
+                        newActivity.setCompleted(false);
+                        taskToUpdate.getActivities().add(newActivity);
+                    }
+                }
+            }
+
+            // Para Remover Actividades
+            for (Activity remainingActivity : existingActivities.values()) {
+                taskToUpdate.getActivities().remove(remainingActivity);
+                activityRepository.delete(remainingActivity);
+            }
+        }
+
         taskRepository.save(taskToUpdate);
+    } else {
+        throw new ExceptionResourceNotFound("Task not found");
     }
+}
+
+        
     
 }

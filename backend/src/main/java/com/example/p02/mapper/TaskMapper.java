@@ -4,11 +4,8 @@ import com.example.p02.dto.TaskDTO;
 import com.example.p02.dto.ActivityDTO;
 import com.example.p02.model.Task;
 import com.example.p02.model.Activity;
+import org.mapstruct.*;
 
-import org.mapstruct.AfterMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +14,7 @@ public interface TaskMapper {
     @Mapping(target = "taskId", ignore = true)
     @Mapping(target = "category", ignore = true)
     @Mapping(target = "completed", ignore = true)
-    @Mapping(target = "activities", source = "activities") 
+    @Mapping(target = "activities", source = "activities")
     Task toTask(TaskDTO taskDTO);
 
     TaskDTO toTaskDTO(Task task);
@@ -33,6 +30,6 @@ public interface TaskMapper {
         if (task.getActivities() == null) {
             task.setActivities(new ArrayList<>());
         }
-        task.getActivities().forEach(activity -> activity.setTask(task)); // Set the task for each activity
+        task.getActivities().forEach(activity -> activity.setTask(task));
     }
 }
