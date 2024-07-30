@@ -82,6 +82,7 @@ public void updateTask(Task newTaskData, Long taskId) throws ExceptionResourceNo
                     if (existingActivity != null) {
                         existingActivity.setActivityName(newActivity.getActivityName());
                         existingActivity.setCompleted(newActivity.getCompleted());
+                        existingActivity.setAssignedUser(newActivity.getAssignedUser());
                         existingActivities.remove(newActivity.getActivityId());
                     } else {
                         newActivity.setTask(taskToUpdate);

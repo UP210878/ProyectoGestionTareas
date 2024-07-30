@@ -78,6 +78,8 @@ const ModifyTaskForm = ({ task, categoryId, setCategories, categories }) => {
   };
 
   const handleAssignedUserChange = async (index, username) => {
+    let newActivities;
+  
     if (username !== null) {
       const response = await fetch(`http://localhost:8080/api/auth/getUserIdByUsername/${username}`, {
         method: 'GET',
@@ -85,17 +87,25 @@ const ModifyTaskForm = ({ task, categoryId, setCategories, categories }) => {
           'Content-Type': 'application/json',
         },
       });
+  
       if (response.ok) {
         const value = await response.json();
-        const newActivities = activities.map((activity, i) =>
+        newActivities = activities.map((activity, i) =>
           i === index ? { ...activity, assignedUser: value, assignedUsername: username } : activity
         );
-        setActivities(newActivities);
       } else {
         console.log("Error in getUserIdByUsername");
+        return;
       }
+    } else {
+      newActivities = activities.map((activity, i) =>
+        i === index ? { ...activity, assignedUser: null, assignedUsername: '' } : activity
+      );
     }
+  
+    setActivities(newActivities);
   };
+  
 
   const modifyTask = async () => {
     const response = await fetch(`http://localhost:8080/api/tasks/updateTask/${task.taskId}`, {
@@ -195,6 +205,7 @@ const ModifyTaskForm = ({ task, categoryId, setCategories, categories }) => {
                   <Autocomplete
                     margin="dense"
                     fullWidth
+                    clearText=''
                     options={usernames}
                     getOptionLabel={(option) => option}
                     renderInput={(params) => (
