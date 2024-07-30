@@ -7,16 +7,21 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Grid, IconButton, Typography, Autocomplete } from '@mui/material';
-import { Delete } from "@mui/icons-material";
+import { Delete, EditOutlined } from '@mui/icons-material';
 
-const ModifyTaskForm = ({ task, categoryId, setCategories, categories, open, handleClose }) => {
+const ModifyTaskForm = ({ task, categoryId, setCategories, categories }) => {
+  const [open, setOpen] = useState(false);
   const [taskName, setTaskName] = useState(task.taskName);
   const [dueDate, setDueDate] = useState(task.dueDate);
   const [activities, setActivities] = useState(task.activities);
   const [usernames, setUsernames] = useState([]);
 
   useEffect(() => {
-    getUsernames();
+    const fetchData = async () => {
+      await getUsernames();
+      await fetchUsernamesForActivities();
+    };
+    fetchData();
   }, []);
 
   const getUsernames = async () => {
@@ -30,8 +35,46 @@ const ModifyTaskForm = ({ task, categoryId, setCategories, categories, open, han
       const usernames = await response.json();
       setUsernames(usernames);
     } else {
-      console.log("Failed to get users")
+      console.log("Failed to get users");
     }
+  };
+
+  const fetchUsernamesForActivities = async () => {
+    const updatedActivities = await Promise.all(
+      activities.map(async (activity) => {
+        if (activity.assignedUser) {
+          const username = await getUsername(activity.assignedUser);
+          return { ...activity, assignedUsername: username };
+        }
+        return activity;
+      })
+    );
+    setActivities(updatedActivities);
+  };
+
+  const getUsername = async (assignedUser) => {
+    const response = await fetch(`http://localhost:8080/api/auth/getUsername/${assignedUser}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (response.ok) {
+      const username = await response.text();
+      return username;
+    } else {
+      console.log("Error fetching user");
+      return null;
+    }
+  };
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   const handleAssignedUserChange = async (index, username) => {
@@ -45,7 +88,7 @@ const ModifyTaskForm = ({ task, categoryId, setCategories, categories, open, han
       if (response.ok) {
         const value = await response.json();
         const newActivities = activities.map((activity, i) =>
-          i === index ? { ...activity, assignedUser: value } : activity
+          i === index ? { ...activity, assignedUser: value, assignedUsername: username } : activity
         );
         setActivities(newActivities);
       } else {
@@ -95,7 +138,7 @@ const ModifyTaskForm = ({ task, categoryId, setCategories, categories, open, han
   };
 
   const addActivityField = () => {
-    setActivities([...activities, { activityName: '' }]);
+    setActivities([...activities, { activityName: '', assignedUser: null, assignedUsername: '' }]);
   };
 
   const handleActivityChange = (index, value) => {
@@ -110,81 +153,87 @@ const ModifyTaskForm = ({ task, categoryId, setCategories, categories, open, han
   };
 
   return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-    >
-      <DialogTitle>Modify Task</DialogTitle>
-      <form onSubmit={handleTaskFormSubmit}>
-        <DialogContent>
-          <DialogContentText>
-            Modify the task and its activities using this form.
-          </DialogContentText>
-          <Typography marginTop={2}>Task Name</Typography>
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="taskName"
-            name="taskName"
-            label="Task Name"
-            fullWidth
-            variant="standard"
-            value={taskName}
-            onChange={handleTaskNameChange}
-          />
-          <Typography marginTop={2}>Activities</Typography>
-          {activities.map((activity, index) => (
-            <Grid container key={index} spacing={1} alignItems="center">
-              <Grid item xs marginTop={1}>
-                <TextField
-                  margin="dense"
-                  label={`Activity ${index + 1}`}
-                  fullWidth
-                  variant="standard"
-                  value={activity.activityName}
-                  onChange={(e) => handleActivityChange(index, e.target.value)}
-                />
-                <Autocomplete
-                  margin="dense"
-                  fullWidth
-                  options={usernames}
-                  getOptionLabel={(option) => option}
-                  renderInput={(params) => (
-                    <TextField {...params} label={`Responsible for Activity ${index + 1}`} variant="standard" />
-                  )}
-                  onChange={(e, value) => handleAssignedUserChange(index, value)}
-                />
+    <React.Fragment>
+      <IconButton color="info" onClick={handleClickOpen}>
+        <EditOutlined />
+      </IconButton>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+      >
+        <DialogTitle>Modify Task</DialogTitle>
+        <form onSubmit={handleTaskFormSubmit}>
+          <DialogContent>
+            <DialogContentText>
+              Modify the task and its activities using this form.
+            </DialogContentText>
+            <Typography marginTop={2}>Task Name</Typography>
+            <TextField
+              autoFocus
+              required
+              margin="dense"
+              id="taskName"
+              name="taskName"
+              label="Task Name"
+              fullWidth
+              variant="standard"
+              value={taskName}
+              onChange={handleTaskNameChange}
+            />
+            <Typography marginTop={2}>Activities</Typography>
+            {activities.map((activity, index) => (
+              <Grid container key={index} spacing={1} alignItems="center">
+                <Grid item xs marginTop={1}>
+                  <TextField
+                    margin="dense"
+                    label={`Activity ${index + 1}`}
+                    fullWidth
+                    variant="standard"
+                    value={activity.activityName}
+                    onChange={(e) => handleActivityChange(index, e.target.value)}
+                  />
+                  <Autocomplete
+                    margin="dense"
+                    fullWidth
+                    options={usernames}
+                    getOptionLabel={(option) => option}
+                    renderInput={(params) => (
+                      <TextField {...params} label={`Responsible for Activity ${index + 1}`} variant="standard" />
+                    )}
+                    onChange={(e, value) => handleAssignedUserChange(index, value)}
+                    value={activity.assignedUsername || ""}
+                  />
+                </Grid>
+                <Grid item>
+                  <IconButton
+                    color='error'
+                    onClick={() => handleDeleteActivity(index)}
+                  >
+                    <Delete />
+                  </IconButton>
+                </Grid>
               </Grid>
-              <Grid item>
-                <IconButton
-                  color='error'
-                  onClick={() => handleDeleteActivity(index)}
-                >
-                  <Delete />
-                </IconButton>
-              </Grid>
-            </Grid>
-          ))}
-          <Button variant="outlined" onClick={addActivityField}>Add Activity</Button>
-          <Typography>Due date</Typography>
-          <TextField
-            margin="dense"
-            id="dueDate"
-            name="dueDate"
-            fullWidth
-            variant="standard"
-            value={dueDate}
-            onChange={handleDueDateChange}
-            type='date'
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color='error'>Cancel</Button>
-          <Button type="submit">Modify Task</Button>
-        </DialogActions>
-      </form>
-    </Dialog>
+            ))}
+            <Button variant="outlined" onClick={addActivityField}>Add Activity</Button>
+            <Typography>Due date</Typography>
+            <TextField
+              margin="dense"
+              id="dueDate"
+              name="dueDate"
+              fullWidth
+              variant="standard"
+              value={dueDate}
+              onChange={handleDueDateChange}
+              type='date'
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} color='error'>Cancel</Button>
+            <Button type="submit">Modify Task</Button>
+          </DialogActions>
+        </form>
+      </Dialog>
+    </React.Fragment>
   );
 }
 

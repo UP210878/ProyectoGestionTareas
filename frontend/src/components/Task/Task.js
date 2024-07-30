@@ -1,21 +1,10 @@
-import React, { useState } from 'react';
-import { Card, CardContent, Typography, Checkbox, FormControlLabel, Grid, Paper, IconButton } from '@mui/material';
+import React from 'react';
+import { Card, CardContent, Typography, Checkbox, FormControlLabel, Grid, Paper } from '@mui/material';
 import Activity from '../Activity';
 import DeleteTaskForm from './DeleteTask';
 import ModifyTaskForm from './ModifyTaskForm';
-import { Edit } from '@mui/icons-material';
 
 const Task = ({ task, setCategories, categories, categoryId }) => {
-  const [openModifyDialog, setOpenModifyDialog] = useState(false);
-
-  const handleOpenModifyDialog = () => {
-    setOpenModifyDialog(true);
-  };
-
-  const handleCloseModifyDialog = () => {
-    setOpenModifyDialog(false);
-  };
-
   const formatDueDate = (dueDate) => {
     const date = new Date(dueDate);
     const year = date.getFullYear();
@@ -43,9 +32,12 @@ const Task = ({ task, setCategories, categories, categoryId }) => {
                   categories={categories}
                   categoryId={categoryId}
                 />
-                <IconButton color="info" onClick={handleOpenModifyDialog}>
-                  <Edit />
-                </IconButton>
+                <ModifyTaskForm
+                  task={task}
+                  categoryId={categoryId}
+                  setCategories={setCategories}
+                  categories={categories}
+                />
               </Grid>
             </Grid>
             {task.activities.map(activity => (
@@ -58,14 +50,6 @@ const Task = ({ task, setCategories, categories, categoryId }) => {
           </CardContent>
         </Paper>
       </Card>
-      <ModifyTaskForm
-        task={task}
-        categoryId={categoryId}
-        setCategories={setCategories}
-        categories={categories}
-        open={openModifyDialog}
-        handleClose={handleCloseModifyDialog}
-      />
     </Paper>
   );
 };
