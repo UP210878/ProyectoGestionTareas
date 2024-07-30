@@ -103,24 +103,14 @@ const Category = () => {
     });
   
     if (response.ok) {
-      const fetchUpdatedCategories = async () => {
-        try {
-          const response = await fetch(`http://localhost:8080/api/category/getCategoryByUserId/${userId}`);
-          const textResponse = await response.text();
-          if (response.ok) {
-            const jsonResponse = JSON.parse(textResponse);
-            setCategories(jsonResponse);
-          } else {
-            console.error('User does not exist');
-          }
-        } catch (error) {
-          console.error('Error fetching categories:', error);
-        }
-      };
-      fetchUpdatedCategories();
+      const updatedCategory = await response.json();
+      setCategories(categories.map(category => 
+        category.categoryId === categoryId ? { ...category, categoryName: updatedCategory.categoryName } : category
+      ));
       setUpdatePrompt(false);
+      setNewCategoryName('');
     } else {
-      console.log("Failed to modify category");
+      console.log("Failed to update category");
     }
   };
   
