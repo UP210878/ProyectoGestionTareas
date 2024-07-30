@@ -53,5 +53,14 @@ public class TaskService {
             throw new ExceptionResourceNotFound("Category doesn't exist in which to save the task");
         }
     }
+
+    public void updateTask(Task newTaskData, Long taskId){
+        Optional<Task> taskOptional = taskRepository.findById(taskId);
+        Task taskToUpdate = taskOptional.get();
+        taskToUpdate.setActivities(newTaskData.getActivities());
+        taskToUpdate.setTaskName(newTaskData.getTaskName());
+        taskToUpdate.setDueDate(newTaskData.getDueDate());
+        taskRepository.save(taskToUpdate);
+    }
     
 }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,10 +33,10 @@ public class TaskController {
         this.taskMapper = taskMapper;
     }
 
-    @PostMapping("/postTask/{id}")
-    public ResponseEntity<Task> postTask(@RequestBody TaskDTO taskDTO, @PathVariable Long id) throws ExceptionResourceNotFound{
+    @PostMapping("/postTask/{categoryId}")
+    public ResponseEntity<Task> postTask(@RequestBody TaskDTO taskDTO, @PathVariable Long categoryId) throws ExceptionResourceNotFound{
         Task task = taskMapper.toTask(taskDTO);
-        taskService.saveTask(task, id);
+        taskService.saveTask(task, categoryId);
         return ResponseEntity.ok(task);
     }
 
@@ -49,5 +50,18 @@ public class TaskController {
             throw new ExceptionResourceNotFound("Task ID doesn't exist");
         }
     }
+
+    @PutMapping("/updateTask/{taskId}")
+    public ResponseEntity<Task> updateTask(@RequestBody TaskDTO taskDTO,@PathVariable Long taskId) throws ExceptionResourceNotFound {
+        Task task = taskMapper.toTask(taskDTO);
+        Optional<Task> oldTask = taskService.getTaskById(taskId);
+        if (oldTask.isPresent()) {
+            taskService.updateTask(task, taskId);
+            return ResponseEntity.ok(task);
+        } else {
+            throw new ExceptionResourceNotFound("Task Id not found");
+        }
+    }
+
     
 }
