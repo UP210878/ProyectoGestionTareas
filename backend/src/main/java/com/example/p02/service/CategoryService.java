@@ -34,6 +34,13 @@ public class CategoryService {
         categoryRepository.save(category);
     }
 
+    public void updateCategory(Category newCategoryData, Long categoryId) {
+        Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
+        Category categoryToUpdate = categoryOptional.get();
+        categoryToUpdate.setCategoryName(newCategoryData.getCategoryName());
+        categoryRepository.save(categoryToUpdate);
+    }
+
     @Transactional(readOnly = true)
     public List<Category> getCatByUserId(Long id){
         return categoryRepository.findCatByUserId(id);

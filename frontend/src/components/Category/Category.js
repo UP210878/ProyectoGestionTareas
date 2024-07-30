@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Button, TextField, Card, CardContent, Grid, Typography, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, createTheme, ThemeProvider, CssBaseline, Paper } from '@mui/material';
+import { Button, TextField, Card, CardContent, Grid, Typography, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, createTheme, ThemeProvider, CssBaseline } from '@mui/material';
 import { ModeContext } from '../Common';
 import {Delete,AddCircle,Edit} from '@mui/icons-material';
 import { Task, TaskForm} from '../Task';
@@ -10,8 +10,9 @@ const Category = () => {
   const [newCategoryName, setNewCategoryName] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deletePrompt, setdeletePrompt] =useState(false);
+  const [updatePrompt, setUpdatePrompt] = useState(false);
   const [categoryId, setCategoryId] = useState(null);
-  const [categoryNameToDelete,setCategoryNameToDelete] =useState('');
+  const [categoryNameToChange,setCategoryNameToChange] =useState('');
   const { isDarkMode } = useContext(ModeContext);
 
   const currentTheme = createTheme({
@@ -19,8 +20,6 @@ const Category = () => {
       mode: isDarkMode ? 'dark' : 'light',
     },
   });
-
-  const theme = currentTheme;
 
   useEffect(() => {
     const token = sessionStorage.getItem('token');
@@ -94,6 +93,38 @@ const Category = () => {
     }
   };
 
+  const modifyCategory = async () => {
+    const response = await fetch(`http://localhost:8080/api/category/updateCategory/${categoryId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ categoryName: newCategoryName }),
+    });
+  
+    if (response.ok) {
+      const fetchUpdatedCategories = async () => {
+        try {
+          const response = await fetch(`http://localhost:8080/api/category/getCategoryByUserId/${userId}`);
+          const textResponse = await response.text();
+          if (response.ok) {
+            const jsonResponse = JSON.parse(textResponse);
+            setCategories(jsonResponse);
+          } else {
+            console.error('User does not exist');
+          }
+        } catch (error) {
+          console.error('Error fetching categories:', error);
+        }
+      };
+      fetchUpdatedCategories();
+      setUpdatePrompt(false);
+    } else {
+      console.log("Failed to modify category");
+    }
+  };
+  
+
   const deleteCategory = async () => {
     const response = await fetch(`http://localhost:8080/api/category/deleteCategory/${categoryId}`, {
       method: 'DELETE',
@@ -117,6 +148,7 @@ const Category = () => {
 
   const handleCloseDialog = () => {
     setDialogOpen(false);
+    setUpdatePrompt(false);
   };
 
   const handleCategoryNameChange = (event) => {
@@ -125,7 +157,7 @@ const Category = () => {
 
   const openDeletePrompt = (categoryId,categoryName) => {
     setCategoryId(categoryId);
-    setCategoryNameToDelete(categoryName);
+    setCategoryNameToChange(categoryName);
     setdeletePrompt(true);
   };
 
@@ -143,6 +175,17 @@ const Category = () => {
     addCategory();
   };
 
+  const handleModifyFormSubmit = (event) => {
+    event.preventDefault();
+    modifyCategory();
+  };
+
+  const openUpdatePrompt = (categoryId,categoryName) => {
+    setCategoryId(categoryId);
+    setCategoryNameToChange(categoryName);
+    setUpdatePrompt(true);
+  }
+
   return (
   <ThemeProvider theme={currentTheme}>
   <CssBaseline/>
@@ -159,7 +202,7 @@ const Category = () => {
                 <IconButton onClick={() => openDeletePrompt(category.categoryId, category.categoryName)} color="error">
                   <Delete />
                 </IconButton>
-                <IconButton color="info">
+                <IconButton color="info" onClick={() => openUpdatePrompt(category.categoryId, category.categoryName)}>
                   <Edit />
                 </IconButton>
               </Grid>
@@ -205,7 +248,7 @@ const Category = () => {
       </Dialog>
 
       <Dialog open={deletePrompt} onClose={closeDeletePrompt}>
-        <DialogTitle>Delete Category {categoryNameToDelete}</DialogTitle>
+        <DialogTitle>Delete Category {categoryNameToChange}</DialogTitle>
         <form onSubmit={deleteCategorySubmit}>
           <DialogActions>
             <Button onClick={closeDeletePrompt} color="error">Cancel</Button>
@@ -213,6 +256,28 @@ const Category = () => {
           </DialogActions>
         </form>
       </Dialog>
+
+      <Dialog open={updatePrompt} onClose={handleCloseDialog}>
+        <DialogTitle>Modify Category</DialogTitle>
+        <form onSubmit={handleModifyFormSubmit}>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              label={categoryNameToChange}
+              type="text"
+              fullWidth
+              value={newCategoryName}
+              onChange={handleCategoryNameChange}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog} color="error">Cancel</Button>
+            <Button type="submit" color="primary">Modify</Button>
+          </DialogActions>
+        </form>
+      </Dialog>
+
     </ThemeProvider>
   );
 };

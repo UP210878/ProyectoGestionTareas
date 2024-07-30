@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -57,6 +58,18 @@ public class CategoryController {
             return ResponseEntity.status(200).body("Succesfully deleted category");
         } else {
             throw new ExceptionResourceNotFound("Category Id doesn't exist");
+        }
+    }
+
+    @PutMapping("/updateCategory/{categoryId}")
+    public ResponseEntity<Category> updateCategory(@RequestBody CategoryAddDTO categoryDTO, @PathVariable Long categoryId) throws ExceptionResourceNotFound{
+        Category category = categoryMapper.toCategory(categoryDTO);
+        Optional<Category> oldCategory = categoryService.getCategory(categoryId);
+        if (oldCategory.isPresent()) {
+            categoryService.updateCategory(category, categoryId);
+            return ResponseEntity.ok(category);
+        } else {
+            throw new ExceptionResourceNotFound("Category to update doesn't exist");
         }
     }
 };
