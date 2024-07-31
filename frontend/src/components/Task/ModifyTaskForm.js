@@ -16,6 +16,14 @@ const ModifyTaskForm = ({ task, categoryId, setCategories, categories }) => {
   const [activities, setActivities] = useState(task.activities);
   const [usernames, setUsernames] = useState([]);
 
+  const formatDueDateForForm = (dueDate) => {
+    const date = new Date(dueDate);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       await getUsernames();
@@ -213,6 +221,7 @@ const ModifyTaskForm = ({ task, categoryId, setCategories, categories }) => {
                     )}
                     onChange={(e, value) => handleAssignedUserChange(index, value)}
                     value={activity.assignedUsername || ""}
+                    isOptionEqualToValue={(option, value) => option === value || value === ""}
                   />
                 </Grid>
                 <Grid item>
@@ -233,7 +242,7 @@ const ModifyTaskForm = ({ task, categoryId, setCategories, categories }) => {
               name="dueDate"
               fullWidth
               variant="standard"
-              value={dueDate}
+              value={formatDueDateForForm(dueDate)}
               onChange={handleDueDateChange}
               type='date'
             />
