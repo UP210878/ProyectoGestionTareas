@@ -117,8 +117,6 @@ const ModifyTaskForm = ({ task, categoryId, setCategories, categories }) => {
     });
 
     if (response.ok) {
-      console.log("taskId",task.taskId);
-      console.log("Body:",JSON.stringify({taskName,dueDate,activities}));
       const updatedTask = await response.json();
       setCategories(categories.map(category =>
         category.categoryId === categoryId
@@ -132,8 +130,6 @@ const ModifyTaskForm = ({ task, categoryId, setCategories, categories }) => {
       ));
       handleClose();
     } else {
-        console.log("taskId",task.taskId);
-      console.log("Body:",JSON.stringify({taskName,dueDate,activities}));
       console.log("Failed to update Task");
     }
   };
