@@ -1,5 +1,6 @@
 import {React,useState,useEffect} from 'react';
 import { FormControlLabel, Checkbox, Typography, Paper } from '@mui/material';
+import activityApi from '../../api/activityApi';
 
 
 const getUsername = async (assignedUser) => {
@@ -18,8 +19,19 @@ const getUsername = async (assignedUser) => {
   }
 };
 
+
 const Activity = ({ activity }) => {
   const [username, setUsername] = useState("");
+  const [completed, setCompleted] = useState(activity.completed);
+
+  const updateStatus = async (currentValue, activityId) => {
+    try {
+      activityApi.switchComplete(currentValue,activityId);
+      setCompleted(!currentValue);
+    } catch (error) {
+      console.error("Error updating")
+    }
+  }
 
   useEffect(() => {
     const fetchUsername = async () => {
@@ -36,7 +48,8 @@ const Activity = ({ activity }) => {
       <Typography variant="body1">{activity.activityName}</Typography>
       <Typography variant="body2">{username}</Typography>
       <FormControlLabel 
-        control={<Checkbox checked={activity.completed} />} 
+        control={<Checkbox checked={completed} />}
+        onClick={()=>{updateStatus(completed,activity.activityId)}} 
         label="Completed" 
         />
     </Paper>

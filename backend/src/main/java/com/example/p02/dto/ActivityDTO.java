@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -14,7 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "Activity DTO model for putting activities")
+@Schema(description = "Activity DTO model for putting activities [DEPRECATED, HANDLE IN TASK DTO]")
 public class ActivityDTO {
     private String activityName;
 
