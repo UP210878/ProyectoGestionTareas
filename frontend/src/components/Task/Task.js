@@ -1,10 +1,22 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Card, CardContent, Typography, Checkbox, FormControlLabel, Grid, Paper } from '@mui/material';
 import Activity from '../Activity';
 import DeleteTaskForm from './DeleteTask';
 import ModifyTaskForm from './ModifyTaskForm';
+import taskApi from '../../api/taskApi';
 
 const Task = ({ task, setCategories, categories, categoryId }) => {
+  const [completed, setCompleted] = useState(task.completed);
+
+  const updateStatus = (currentValue, taskId) => {
+    try {
+      taskApi.switchStatus(currentValue,taskId);
+      setCompleted(!currentValue);
+    } catch (error) {
+      console.error("Error updating task status, error: ", error)
+    }
+  }
+
   const formatDueDate = (dueDate) => {
     const date = new Date(dueDate);
     const year = date.getFullYear();
@@ -44,7 +56,8 @@ const Task = ({ task, setCategories, categories, categoryId }) => {
               <Activity key={activity.activityId} activity={activity} />
             ))}
             <FormControlLabel 
-              control={<Checkbox checked={task.completed} />} 
+              control={<Checkbox checked={completed} />} 
+              onClick={()=>{updateStatus(completed,task.taskId)}} 
               label="Task Complete" 
             />
           </CardContent>

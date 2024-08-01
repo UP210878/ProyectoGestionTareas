@@ -63,5 +63,16 @@ public class TaskController {
         }
     }
 
+
+    @PutMapping("/updateStatus/{taskId}")
+    public ResponseEntity<String> postTask(@RequestBody Boolean isComplete, @PathVariable Long taskId) throws ExceptionResourceNotFound{
+        Optional<Task> taskOptional = taskService.getTaskById(taskId);
+        if (taskOptional.isPresent()) {
+            taskService.setStatus(!isComplete, taskId);
+            return ResponseEntity.ok("succesfully updated");
+        } else {
+            throw new ExceptionResourceNotFound("La id de la actividad no existe.");
+        }
+    }
     
 }

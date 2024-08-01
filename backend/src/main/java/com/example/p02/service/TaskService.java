@@ -105,6 +105,13 @@ public void updateTask(Task newTaskData, Long taskId) throws ExceptionResourceNo
     }
 }
 
+    public void setStatus(Boolean status, Long id){
+        Optional<Task> task = taskRepository.findById(id);
+        Task taskToUpdate = task.get();
+        taskToUpdate.setCompleted(status);
+        taskRepository.save(taskToUpdate);
+    }
+
         
     
 }
