@@ -19,7 +19,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.example.p02.dto.UserLoginDTO;
 import com.example.p02.dto.UserRegisterDTO;
@@ -30,7 +33,7 @@ import com.example.p02.service.UserService;
 import com.example.p02.util.JwtUtil;
 import java.util.Optional;
 
-@Tag(name = "Endpoint Users", description = "Users Log In y Registro")
+@Tag(name = "Endpoint Users", description = "Todo lo referente a usuarios.")
 @RestController
 @RequestMapping("/api/auth")
 public class UserController {
@@ -82,7 +85,33 @@ public class UserController {
     } else {
       throw new ExceptionResourceNotFound("User " + id  + " not found within the database.");
     }
-  };
+  }
+
+  @GetMapping ({ "/getUsernames"})
+  public ResponseEntity<List<String>> getUsernames(){
+    return ResponseEntity.ok(userService.getUsernames());
+  }
+
+  @GetMapping({"/getUsername/{id}"})
+  public ResponseEntity<String> getUsername(@PathVariable Long id) throws ExceptionResourceNotFound {
+    Optional<User> userOptional = userService.getUser(id);
+    if (userOptional.isPresent()) {
+      User user = userOptional.get();
+      return ResponseEntity.ok(user.getUsername());
+    } else {
+      throw new ExceptionResourceNotFound("User not found");
+    }
+  }
+
+  @GetMapping({"/getUserIdByUsername/{username}"})
+  public ResponseEntity<Long> getUserIdByUsername(@PathVariable String username) throws ExceptionResourceNotFound{
+    Long userId = userService.findIdByUsername(username);
+    if (userId!=null) {
+      return ResponseEntity.ok(userService.findIdByUsername(username));
+    } else {
+      throw new ExceptionResourceNotFound("Username doesn't exist");
+    }
+  }
 
   @DeleteMapping("/delUser/{id}")
   public ResponseEntity<String> delUser(@PathVariable Long id) throws ExceptionResourceNotFound {
@@ -105,5 +134,20 @@ public class UserController {
       throw new ExceptionResourceNotFound("User " + id  + " not found within the database. Unable to update");
     }
   }
+
+  @PostMapping("/validateToken")
+  public ResponseEntity<Map<String, Long>> validateToken(@RequestBody Map<String, String> tokenMap) {
+      String token = tokenMap.get("token");
+      try {
+          Long userId = JwtUtil.validateToken(token);
+          Map<String, Long> response = new HashMap<>();
+          response.put("userId", userId);
+          return ResponseEntity.ok(response);
+      } catch (Exception e) {
+          return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+      }
+  }
+  
+  
 
 }
