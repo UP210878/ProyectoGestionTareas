@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.info.Info;
 @OpenAPIDefinition(
     info = @Info(
         title = "API Full",
-        description = "API para la administración de Full",
+        description = "API para usuarios",
         version = "v0.1.0"
     )
 )
