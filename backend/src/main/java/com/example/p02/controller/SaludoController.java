@@ -10,7 +10,7 @@ public class SaludoController {
     @GetMapping("/Saludo") 
     public String saludar(Model model) {
       model.addAttribute("mensaje", "Hola desde el Controller!...");
-      return "saludos";    // saludos.html
+      return "saludos";    // saludos.html Prueba :D
     }
 
 }
