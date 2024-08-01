@@ -16,6 +16,10 @@ public interface UserService {
 
     public User findByUsername(String username);
 
+    public Long findIdByUsername(String username);
+
+    public List<String> getUsernames();
+
     public boolean checkPasswd(User user, String rawPassword);
 
     public User findByEmail(String email);
