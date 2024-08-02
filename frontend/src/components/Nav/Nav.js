@@ -45,6 +45,10 @@ const Nav = () => {
       name: 'Inicio',
     },
     {
+      link: '/myactivities',
+      name: 'My Activities'
+    },
+    {
       link: '/logout',
       name: 'Logout',
     }
