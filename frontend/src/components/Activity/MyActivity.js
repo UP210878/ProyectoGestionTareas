@@ -5,7 +5,6 @@ import activityApi from '../../api/activityApi';
 
 const MyActivities = () =>{
   const [username, setUsername] = useState("");
-  const [completed, setCompleted] = useState(true);
   const [userId, setUserId] = useState(null);
   const [activities, setActivities] = useState([]);
   const { isDarkMode } = useContext(ModeContext);
