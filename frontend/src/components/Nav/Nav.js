@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { AppBar, Toolbar, Typography, IconButton, Button, ThemeProvider, createTheme } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
 import { Link } from 'react-router-dom';
 import { AuthContext, ModeContext } from '../Common';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
@@ -55,9 +54,6 @@ const Nav = () => {
     <ThemeProvider theme={darkTheme}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
-            <MenuIcon />
-          </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             TodoApp
           </Typography>
