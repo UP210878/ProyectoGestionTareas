@@ -1,55 +1,34 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import './Login.css';
-import { useNavigate } from 'react-router-dom';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import PersonIcon from '@mui/icons-material/Person';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
+import { Grid, Container, Typography, Box, TextField, CssBaseline, Button, Avatar, Link, Paper, createTheme, ThemeProvider } from '@mui/material';
+import { useForm, Controller} from 'react-hook-form';
+import { ModeContext } from '../Common';
 
 const Register = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [username, setUsername] = useState('');
-  const [isMailWrong, setMailWrong] = useState(false);
-  const [usernameAlreadyExists, setUsernameAlreadyExists] = useState(false);
-  const [emailAlreadyExists, setEmailAlreadyExists] = useState(false);
-  const [passwordsMatch, setPasswordsMatch] = useState(true);
-  const [isEmailEmpty, setEmailEmpty] = useState(false);
-  const [isPasswordEmpty, setPasswordEmpty] = useState(false);
-  const [isConfirmPasswordEmpty, setConfirmPasswordEmpty] = useState(false);
-  const [isUsernameEmpty, setUsernameEmpty] = useState(false);
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
+  const { handleSubmit, control, setError, formState: { errors } } = useForm();
   const navigate = useNavigate();
+  const { isDarkMode } = useContext(ModeContext);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const currentTheme = createTheme({
+    palette: {
+      mode: isDarkMode? 'dark':'light',
+    },
+  });
 
+  const onSubmit = async (data) => {
+    const { email, password, confirmPassword, username } = data;
 
-
-    setEmailEmpty(email === '');
-    setPasswordEmpty(password === '');
-    setConfirmPasswordEmpty(confirmPassword === '');
-    setUsernameEmpty(username === '');
-
-    if (email === '' || password === '' || username === '' || confirmPassword === '') {
+    if (password !== confirmPassword) {
+      setError('confirmPassword', { type: 'manual', message: 'Passwords do not match' });
       return;
     }
 
-    if (!passwordsMatch) {
-      return;
-    }
-
-    const user = { username: username, password, email: email };
+    const user = { username, password, email };
 
     try {
-      const response = await fetch('http://localhost:8080/api/register', {
+      const response = await fetch('http://localhost:8080/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -63,118 +42,147 @@ const Register = () => {
       } else {
         const bodyError = await response.text();
         if (bodyError === 'Email Already Exists') {
-          setEmailAlreadyExists(true);
+          setError('email', { type: 'manual', message: 'Email already in use, please choose another one' });
         } else if (bodyError === 'Username Already Exists') {
-          setUsernameAlreadyExists(true);
+          setError('username', { type: 'manual', message: 'Username already in use, please choose another one' });
         } else {
           console.error('Registration failed')
         }
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error fetching from the api');
+      setError('general', { type: 'manual', message: 'Unable to connect to database' });
     }
   };
 
   return (
+    <ThemeProvider theme={currentTheme}>
     <Container component="main" maxWidth="xs">
       <CssBaseline />
+      <Paper elevation={5}>
       <Box
         sx={{
           marginTop: 8,
+          padding: 3,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
+        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
           <PersonIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Register
+          Sign Up
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="username"
-            label="Username"
+        <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 1 }}>
+        <Controller
             name="username"
-            autoComplete="username"
-            autoFocus
-            value={username}
-            onChange={(e) => {
-              setUsername(e.target.value);
-              setUsernameEmpty(false);
-              setUsernameAlreadyExists(false);
-            }}
-            error={isUsernameEmpty || usernameAlreadyExists}
-            helperText={(usernameAlreadyExists && "Username already in use, please choose another one") || (isUsernameEmpty && "Username cannot be empty, try again.")}
+            control={control}
+            defaultValue=""
+            rules={{ required: 'Username cannot be empty, try again.' }}
+            render={({ field }) => (
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                label="Username"
+                placeholder='Username'
+                autoFocus
+                {...field}
+                error={!!errors.username || !!errors.general}
+                helperText={errors.username ? errors.username.message : ''}
+              />
+            )}
           />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email"
+          <Controller
             name="email"
-            autoComplete="email"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              setMailWrong(e.target.value !== '' && !emailRegex.test(e.target.value));
-              setEmailEmpty(false);
-              setEmailAlreadyExists(false);
+            control={control}
+            defaultValue=""
+            rules={{
+              required: 'Email cannot be empty, try again.',
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: 'Please input a valid email',
+              },
             }}
-            error={emailAlreadyExists || isMailWrong || isEmailEmpty}
-            helperText={(emailAlreadyExists && "Email already in use, please choose another one") || (isMailWrong && "Please input a valid email") || (isEmailEmpty && "Email cannot be empty, try again.")}
+            render={({ field }) => (
+              <TextField
+                margin="normal"
+                required
+                placeholder='Example@gmail.com'
+                fullWidth
+                label="Email"
+                {...field}
+                error={!!errors.email || !!errors.general}
+                helperText={errors.email ? errors.email.message : ''}
+              />
+            )}
           />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
+          <Controller
             name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-              setPasswordsMatch(e.target.value === '' || confirmPassword === e.target.value || confirmPassword === '');
-              setPasswordEmpty(false);
-            }}
-            error={!passwordsMatch || isPasswordEmpty}
-            helperText={(isPasswordEmpty && "Please input a password") || (!passwordsMatch && "Passwords do not match")}
+            control={control}
+            defaultValue=""
+            rules={{ required: 'Please input a password' }}
+            render={({ field }) => (
+              <TextField
+                margin="normal"
+                required
+                placeholder='Password'
+                fullWidth
+                type="password"
+                label="Password"
+                {...field}
+                error={!!errors.password || !!errors.general}
+                helperText={errors.password ? errors.password.message : ''}
+              />
+            )}
           />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
+          <Controller
             name="confirmPassword"
-            label="Confirm Password"
-            type="password"
-            id="confirmPassword"
-            value={confirmPassword}
-            onChange={(e) => {
-              setConfirmPassword(e.target.value);
-              setPasswordsMatch(e.target.value === '' || password === e.target.value);
-              setConfirmPasswordEmpty(false);
-            }}
-            error={!passwordsMatch || isConfirmPasswordEmpty}
-            helperText={(isConfirmPasswordEmpty && "Please confirm your password") || (!passwordsMatch && "Passwords do not match")}
+            control={control}
+            defaultValue=""
+            rules={{ required: 'Please confirm your password' }}
+            render={({ field }) => (
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                type="password"
+                placeholder='Password'
+                label="Confirm Password"
+                {...field}
+                error={!!errors.confirmPassword || !!errors.general}
+                helperText={errors.confirmPassword ? errors.confirmPassword.message : ''}
+              />
+            )}
           />
+          {errors.general && (
+            <Typography color="error" variant="body2" align="center">
+              {errors.general.message}
+            </Typography>
+          )}
           <Button
             type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 , bgcolor: 'primary.main'}}
           >
-            Register
+            Sign Up
           </Button>
+          <Grid container>
+              <Grid item xs>
+              </Grid>
+              <Grid item>
+                <Link component={RouterLink} to="/login" variant="body2">
+                  {"I already have an account"}
+                </Link>
+              </Grid>
+            </Grid>
         </Box>
-      </Box>
+      </Box></Paper>
     </Container>
+    </ThemeProvider>
   );
 }
 

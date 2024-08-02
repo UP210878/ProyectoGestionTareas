@@ -2,7 +2,9 @@ import React, { useContext } from 'react';
 import { AppBar, Toolbar, Typography, IconButton, Button, ThemeProvider, createTheme } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Link } from 'react-router-dom';
-import { AuthContext } from '../Common';
+import { AuthContext, ModeContext } from '../Common';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
 
 const darkTheme = createTheme({
   palette: {
@@ -18,6 +20,12 @@ const darkTheme = createTheme({
 
 const Nav = () => {
   const { isAuthenticated } = useContext(AuthContext);
+  const { isDarkMode, setDarkMode } = useContext(ModeContext);
+
+  const darkModeSwitch = () => {
+    isDarkMode ? setDarkMode(false): setDarkMode(true);
+  }
+  
 
   const menuItems = !isAuthenticated ? [
     {
@@ -58,6 +66,9 @@ const Nav = () => {
               {item.name}
             </Button>
           ))}
+        <IconButton sx={{ ml: 1 }} onClick={darkModeSwitch} color="inherit">
+        {isDarkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+      </IconButton>
         </Toolbar>
       </AppBar>
     </ThemeProvider>

@@ -8,9 +8,17 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import jakarta.persistence.CascadeType;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import java.util.ArrayList;
 
 @Data
 @Entity
@@ -22,11 +30,15 @@ public class Category {
     @Column(name = "categoryId")
     private Integer categoryId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId", nullable = false)
-    private User user;
+    @NotNull
+    @Column(name = "userId")
+    private Long userId;
 
-    @NotEmpty
+    @NotBlank
     @Column(name = "categoryName", nullable = false, length = 30)
     private String categoryName;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Task> tasks = new ArrayList<>();
 }
