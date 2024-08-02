@@ -112,10 +112,10 @@ const MyActivities = () =>{
 return(
     <ThemeProvider theme={currentTheme}>
         <CssBaseline/>
-          <Grid container spacing={3} sx={{ margin: '0 auto', width: '100%', overflowX: 'hidden' }}>
+          <Grid container spacing={0} sx={{ margin: '0 auto', width: '100%', overflowX: 'hidden' }}>
           {activities.map(activity => (
-          <Grid item sx xs={3}>
-        <Paper elevation={5} sx={{padding:2}} key={activity.activityId}>
+          <Grid item sx xs={12} sm={3}>
+        <Paper elevation={3} sx={{margin:1,padding:2}} key={activity.activityId}>
         <Typography variant="body1">{activity.activityName}</Typography>
         <FormControlLabel 
           control={<Checkbox checked={activity.completed} />}
