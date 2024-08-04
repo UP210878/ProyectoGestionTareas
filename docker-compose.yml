@@ -3,7 +3,7 @@ services:
   frontend:
     build: frontend
     ports:
-      - 3000:${FRONTEND_PORT}
+      - 80:80
     environment:
       - NODE_OPTIONS=--max-old-space-size=4096
 
