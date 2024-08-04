@@ -26,7 +26,7 @@ const TaskForm = ({ categoryId, setCategories, categories }) => {
   }, []);
 
   const getUsernames = async () => {
-    const response = await fetch(`http://localhost:8080/api/auth/getUsernames`, {
+    const response = await fetch(`http://143.198.244.40:8080/api/auth/getUsernames`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -42,7 +42,7 @@ const TaskForm = ({ categoryId, setCategories, categories }) => {
 
   const handleAssignedUserChange = async (index, username) => {
     if (username !== null) {
-      const response = await fetch(`http://localhost:8080/api/auth/getUserIdByUsername/${username}`, {
+      const response = await fetch(`http://143.198.244.40:8080/api/auth/getUserIdByUsername/${username}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -61,7 +61,7 @@ const TaskForm = ({ categoryId, setCategories, categories }) => {
   };
   
   const addTask = async () => {
-    const response = await fetch(`http://localhost:8080/api/tasks/postTask/${categoryId}`, {
+    const response = await fetch(`http://143.198.244.40:8080/api/tasks/postTask/${categoryId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

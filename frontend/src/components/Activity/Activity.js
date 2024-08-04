@@ -4,7 +4,7 @@ import activityApi from '../../api/activityApi';
 
 
 const getUsername = async (assignedUser) => {
-  const response = await fetch(`http://localhost:8080/api/auth/getUsername/${assignedUser}`, {
+  const response = await fetch(`http://143.198.244.40:8080/api/auth/getUsername/${assignedUser}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

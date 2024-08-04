@@ -10,7 +10,7 @@ const MyActivities = () =>{
   const { isDarkMode } = useContext(ModeContext);
 
   const getUsername = async (userId) => {
-    const response = await fetch(`http://localhost:8080/api/auth/getUsername/${userId}`, {
+    const response = await fetch(`http://143.198.244.40:8080/api/auth/getUsername/${userId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -36,7 +36,7 @@ const MyActivities = () =>{
     
         const fetchUserId = async () => {
           try {
-            const response = await fetch('http://localhost:8080/api/auth/validateToken', {
+            const response = await fetch('http://143.198.244.40:8080/api/auth/validateToken', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ const MyActivities = () =>{
         if (userId !== null) {
           const fetchActivities = async () => {
             try {
-              const response = await fetch(`http://localhost:8080/api/activities/getActivitiesByUser/${userId}`);
+              const response = await fetch(`http://143.198.244.40:8080/api/activities/getActivitiesByUser/${userId}`);
               const textResponse = await response.text();
               if (response.ok) {
                 const jsonResponse = JSON.parse(textResponse);

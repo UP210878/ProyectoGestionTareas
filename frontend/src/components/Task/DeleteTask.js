@@ -16,7 +16,7 @@ const DeleteTaskForm = ({taskId,setCategories,categories,categoryId}) => {
   };
 
   const deleteTask = async () => {
-    const response = await fetch(`http://localhost:8080/api/tasks/deleteTask/${taskId}`, {
+    const response = await fetch(`http://143.198.244.40:8080/api/tasks/deleteTask/${taskId}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

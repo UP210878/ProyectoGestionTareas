@@ -30,7 +30,7 @@ const Category = () => {
 
     const fetchUserId = async () => {
       try {
-        const response = await fetch('http://localhost:8080/api/auth/validateToken', {
+        const response = await fetch('http://143.198.244.40:8080/api/auth/validateToken', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -57,7 +57,7 @@ const Category = () => {
     if (userId !== null) {
       const fetchCategories = async () => {
         try {
-          const response = await fetch(`http://localhost:8080/api/category/getCategoryByUserId/${userId}`);
+          const response = await fetch(`http://143.198.244.40:8080/api/category/getCategoryByUserId/${userId}`);
           const textResponse = await response.text();
           if (response.ok) {
             const jsonResponse = JSON.parse(textResponse);
@@ -74,7 +74,7 @@ const Category = () => {
   }, [userId]);
 
   const addCategory = async () => {
-    const response = await fetch(`http://localhost:8080/api/category/postCategory/${userId}`, {
+    const response = await fetch(`http://143.198.244.40:8080/api/category/postCategory/${userId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -94,7 +94,7 @@ const Category = () => {
   };
 
   const modifyCategory = async () => {
-    const response = await fetch(`http://localhost:8080/api/category/updateCategory/${categoryId}`, {
+    const response = await fetch(`http://143.198.244.40:8080/api/category/updateCategory/${categoryId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -116,7 +116,7 @@ const Category = () => {
   
 
   const deleteCategory = async () => {
-    const response = await fetch(`http://localhost:8080/api/category/deleteCategory/${categoryId}`, {
+    const response = await fetch(`http://143.198.244.40:8080/api/category/deleteCategory/${categoryId}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
