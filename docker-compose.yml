@@ -3,14 +3,14 @@ services:
   frontend:
     build: frontend
     ports:
-      - 3000:${FRONTEND_PORT}
+      - ${FRONTEND_PORT}:3000
     environment:
       - NODE_OPTIONS=--max-old-space-size=4096
 
   backend:
     build: backend
     ports:
-      - 8080:${BACKEND_PORT}
+      - ${BACKEND_PORT}:8080
     depends_on:
       - db
   db:
