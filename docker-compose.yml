@@ -4,6 +4,9 @@ services:
     build: frontend
     ports:
       - 3000:${FRONTEND_PORT}
+    environment:
+      - NODE_OPTIONS=--max-old-space-size=4096
+
   backend:
     build: backend
     ports:
