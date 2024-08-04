@@ -20,5 +20,5 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class TaskDTO {
     private String taskName;
     private Date dueDate;
-    private List<ActivityDTO> activities;
+    private List<ActivityDTO> activities;
 }

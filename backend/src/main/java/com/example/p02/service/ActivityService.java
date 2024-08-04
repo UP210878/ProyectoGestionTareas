@@ -36,7 +36,7 @@ public class ActivityService {
         activityRepository.deleteById(id);
     }
 
-    public List<Activity> getActivityByUserId(Long id){
-        return activityRepository.getActivitiesByAssignedUser(id);
+    public List<Activity> getActivitiesByUser(Long id){
+        return activityRepository.findActivitiesByAssignedUser(id);
     }
 }

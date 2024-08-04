@@ -14,5 +14,5 @@ import lombok.NoArgsConstructor;
 @Schema(description = "DTO para cuando el usuario crea una categoria")
 public class CategoryAddDTO {
     @NotBlank
-    private String categoryName;
+    private String categoryName;
 }

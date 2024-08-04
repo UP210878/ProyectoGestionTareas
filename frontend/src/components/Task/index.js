@@ -1,3 +1,2 @@
-import Task from './Task';
 export { default as TaskForm } from './TaskForm';
-export default Task;
+export { default as Task } from './Task';

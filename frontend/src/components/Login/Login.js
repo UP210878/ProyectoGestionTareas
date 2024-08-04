@@ -6,6 +6,7 @@ import LoginIcon from '@mui/icons-material/Login';
 import { AuthContext, ModeContext } from '../Common';
 import { Paper, Container, Typography, Box, Grid, Link, TextField, CssBaseline, Button, Avatar, createTheme, ThemeProvider} from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
+import userApi from '../../api/userApi';
 
 const Login = () => {
   const { handleSubmit, control, setError, clearErrors, formState: { errors } } = useForm();
@@ -21,29 +22,19 @@ const Login = () => {
     },
   });
 
-  const onSubmit = async (data) => {
-    const { email, password } = data;
+  const onSubmit = async (loginForm) => {
+    const { email, password } = loginForm;
 
     try {
-      const response = await fetch('http://localhost:8080/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (response.ok) {
-        const token = await response.json();
-        sessionStorage.setItem('token', token);
-        setIsAuthenticated(true);
-        navigate('/home');
-      } else {
-        setError('general', { type: 'manual', message: 'Username/Password are incorrect.' });
-      }
+      const data = await userApi.login({email, password});
+      const token = data.token;
+      sessionStorage.setItem('token', token);
+      setIsAuthenticated(true);
+      navigate('/home');
     } catch (error) {
-      console.error('Error fetching from the API');
-      setError('general', { type: 'manual', message: 'Unable to connect to database' });
+      setIsAuthenticated(false);
+      setError('general', { type: 'manual', message: "Invalid credentials" });
+      sessionStorage.removeItem('token');
     }
   };
 

@@ -13,6 +13,6 @@ public class ErrorDTO {
 
     private String code;
     private String message;
-    private Object details;
+    private Object details;
 
 }

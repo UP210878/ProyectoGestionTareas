@@ -1,10 +1,10 @@
-import React, { useContext } from 'react';
-import { AppBar, Toolbar, Typography, IconButton, Button, ThemeProvider, createTheme } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
+import React, { useContext, useState } from 'react';
+import { AppBar,Toolbar,Typography,IconButton,Button,ThemeProvider,createTheme,Drawer,List,ListItemText,Box,useMediaQuery,useTheme, ListItemButton } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { AuthContext, ModeContext } from '../Common';
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
+import MenuIcon from '@mui/icons-material/Menu';
+import Brightness4Icon from '@mui/icons-material/Brightness7';
+import Brightness7Icon from '@mui/icons-material/Brightness4';
 
 const darkTheme = createTheme({
   palette: {
@@ -21,11 +21,17 @@ const darkTheme = createTheme({
 const Nav = () => {
   const { isAuthenticated } = useContext(AuthContext);
   const { isDarkMode, setDarkMode } = useContext(ModeContext);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const darkModeSwitch = () => {
-    isDarkMode ? setDarkMode(false): setDarkMode(true);
+    setDarkMode(!isDarkMode);
   }
-  
+
+  const toggleDrawer = (open) => () => {
+    setDrawerOpen(open);
+  }
 
   const menuItems = !isAuthenticated ? [
     {
@@ -43,7 +49,11 @@ const Nav = () => {
   ] : [
     {
       link: '/home',
-      name: 'Inicio',
+      name: 'Home',
+    },
+    {
+      link: '/myactivities',
+      name: 'My Activities'
     },
     {
       link: '/logout',
@@ -55,20 +65,39 @@ const Nav = () => {
     <ThemeProvider theme={darkTheme}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
-            <MenuIcon />
-          </IconButton>
+          {isMobile && (
+            <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer(true)} sx={{marginRight:3}}>
+              <MenuIcon />
+            </IconButton>
+          )}
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            TodoApp
+            <Link to="/home" style={{ textDecoration: 'none', color: 'inherit' }}>
+              TodoApp
+            </Link>
           </Typography>
-          {menuItems.map((item) => (
-            <Button color="inherit" component={Link} to={item.link} key={item.name}>
-              {item.name}
-            </Button>
-          ))}
-        <IconButton sx={{ ml: 1 }} onClick={darkModeSwitch} color="inherit">
-        {isDarkMode ? <Brightness7Icon /> : <Brightness4Icon />}
-      </IconButton>
+          {!isMobile && (
+            <Box sx={{ display: 'flex' }}>
+              {menuItems.map((item) => (
+                <Button color="inherit" component={Link} to={item.link} key={item.name}>
+                  {item.name}
+                </Button>
+              ))}
+            </Box>
+          )}
+          <IconButton sx={{ ml: 1 }} onClick={darkModeSwitch} color="inherit">
+            {isDarkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+          </IconButton>
+          {isMobile && (
+            <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)} sx={{ '& .MuiDrawer-paper': { width: '50%' } }}>
+              <List>
+                {menuItems.map((item) => (
+                  <ListItemButton component={Link} to={item.link} key={item.name} onClick={toggleDrawer(false)}>
+                    <ListItemText primary={item.name} />
+                  </ListItemButton>
+                ))}
+              </List>
+            </Drawer>
+          )}
         </Toolbar>
       </AppBar>
     </ThemeProvider>

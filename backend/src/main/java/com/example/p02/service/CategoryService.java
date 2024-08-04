@@ -41,6 +41,7 @@ public class CategoryService {
         categoryRepository.save(categoryToUpdate);
     }
 
+    @Transactional(readOnly = true)
     public List<Category> getCatByUserId(Long id){
         return categoryRepository.findCatByUserId(id);
     }

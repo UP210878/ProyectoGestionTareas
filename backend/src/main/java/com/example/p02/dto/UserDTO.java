@@ -27,5 +27,4 @@ public class UserDTO {
   
     @JsonFormat(pattern = "yyyy-MM-dd") 
     private LocalDate updated_at;
-  
 }
